@@ -1,0 +1,24 @@
+[ libRooUnfold.so ]
+# List of selected classes
+class RooUnfold
+class RooUnfoldBayes
+class RooUnfoldBinByBin
+class RooUnfoldErrors
+class RooUnfoldIds
+class RooUnfoldInvert
+class RooUnfoldParms
+class RooUnfoldResponse
+class RooUnfoldSvd
+class RooUnfoldTUnfold
+class TSVDUnfold_130729
+header RooUnfold.h
+header RooUnfoldBayes.h
+header RooUnfoldBinByBin.h
+header RooUnfoldErrors.h
+header RooUnfoldIds.h
+header RooUnfoldInvert.h
+header RooUnfoldParms.h
+header RooUnfoldResponse.h
+header RooUnfoldSvd.h
+header RooUnfoldTUnfold.h
+header TSVDUnfold_local.h
