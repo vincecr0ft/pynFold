@@ -57,14 +57,14 @@ class OneHist:
 
   def fill(self, newevent):
     tmphist = np.histogram([newevent], self.bins)
-    self.x += tmphist[0]
+    self.x += np.asarray(tmphist[0], dtype=float)
 
   def add(self, newhist):
     if isinstance(newhist, OneHist):
       if self.bins.all() == newhist.bins.all():
         self.x += newhist.x
       else:
-        "Histograms not the same size..."
+        print "Histograms not the same size..."
     elif isinstance(newhist, tuple):
       if len(newhist) == 2 and isinstance(newhist[0], np.ndarray):
         self.x += newhist[0]
@@ -83,3 +83,22 @@ class OneHist:
         for i in range(1,nbins+1):
           contents.append(float(newhist.GetBinContent(i)))
         self.x += np.asarray(contents, dtype=float)
+
+class TwoHist:
+  def __init__(self, inputhist=None, xlo=0, xhi=10, nbins = 10, bins=None):
+    if isinstance(bins, list) or isinstance(bins, np.ndarray):
+      self.nbins = len(bins) - 1
+      self.bins = np.asarray(bins)
+      self.x = np.zeros((self.nbins,self.nbins), dtype=float)
+    else:
+      self.nbins = nbins
+      self.bins = np.linspace(xlo, xhi, nbins+1)
+      self.x = np.zeros((self.nbins,self.nbins), dtype=float)
+      
+    if inputhist is None:
+      return
+
+  def fill(self, xm, xt):
+    tmphist = np.histogram2d([xm],[xt], (self.bins, self.bins))
+    self.x += np.asarray(tmphist[0],dtype=float)
+
