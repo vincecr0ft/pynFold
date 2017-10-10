@@ -1,6 +1,6 @@
 from fold import fold, printdiana
 import numpy as np
-#printdiana()
+from foldIterative import PynFoldIterative
 
 import matplotlib.pyplot as plt
 
@@ -24,3 +24,12 @@ for i in np.random.normal(0.0, 5.0, 10000):
 print response1.fold.x
 plt.imshow(response1.fold.x.T, interpolation='nearest', origin='low',cmap="plasma")
 plt.show()
+
+measured = np.histogram(np.random.normal(1.,2.,10000), np.linspace(-10,10,20))
+bayesian = PynFoldIterative(response1, measured, 4)
+
+reco = bayesian.reco_hist()
+
+print "###########################"
+print "reconstructed histogram is"
+print reco
