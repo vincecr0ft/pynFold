@@ -1,38 +1,37 @@
 import numpy as np
-from histogram import OneHist, TwoHist
+from discretefunctions import f1x, Axy
+from banner import printdiana
+from foldFBU import fbu
 
 class fold:
-  def __init__(self, nbins = None, xlo = None, xhi = None, measured = None, truth = None):
-    if nbins and xlo and xhi:
-      self.measured = OneHist(nbins=nbins, xlo = xlo, xhi = xhi)
-      self.truth = OneHist(nbins=nbins, xlo = xlo, xhi = xhi)
-      self.fold = TwoHist(nbins=nbins, xlo = xlo, xhi = xhi)
+  def __init__(self, npoints = None, xlo = None, xhi = None, measured = None, truth = None, data = [], response= [], method = 'fbu'):
+    self.response = response
+    self.data = data
+    if npoints and xlo and xhi:
+      self.measured = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+      self.truth = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+      self.response = Axy(npoints=npoints, xlo = xlo, xhi = xhi)
+    if 'fbu' in method.lower():
+      upper = []
+      lower = []
+      for point in data:
+        if point > 0:
+          upper.append(int(point*100))
+          lower.append(int(point*0.01))
+        else:
+          upper.append(100)
+          lower.append(0)
+      print 'data {}, response {}'.format(self.data, self.response)
+      upper = [3000, 3000]
+      lower = [0,0]
+      self.run = fbu(data=data, lower=lower, upper=upper, response=self.response)
+
 
   def fill(self, xr, xt):
     if isinstance(xr,float) and isinstance(xt,float):
       self.measured.fill(xr)
       self.truth.fill(xt)
-      self.fold.fill(xr, xt)
+      self.response.fill(xr, xt)
   def miss(self, xt):
     self.truth.fill(xt)
 
-def printdiana():
-  print "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMddddddddhossydddh:://+shddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
-  print "MMMMMMMMMNs...+NMMMddhys+::+ymMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMMMMMMh+-+y+yMMMMMMMMMMMMNh+-/hNMMMMMMMMMMMMMMMMMMMMMNyyyMMMMNsoyMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdddMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMMMMd/-omMMMMMMMMMMMMMMNmhhhhs:/dMMMMMMMMMMMMMMMMMMMMd...MMMMy..-dMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmoooMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMMMy-:+ssyhdNMMMMMMMMNhydNMMMMNo-oMMMMMMMMMMMMMMMMMMMd...MMMMMdhdMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmoooMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMMs.oMMMNmdyoohNMMMMdymMMMMMMMMMs.oMMMMMMMMMmyo+++oymd...MMMMd+++NMMMNmhso+++oydNMMMMN+++mmyo+++ohNMMMMMNdyo++++oymMMMMMMmoooMNdhyyyhmNMMMMMMNmhhyyyhdNMMMMMdyyhNmhyyyhdmNMM"
-  print "MMd./MMMMMMMMMms/hMMhyNNmhhyyyyyhm/.hMMMMMMm/-.-:/+/--/...MMMMh...NMMMh--:/++/-../mMMMm.../--:::-..:hMMMM+.-:+++:-.-sMMMMMmoooyossssooosmMMMNhsoosyyysooyNMMMhooososyyssoosdM"
-  print "MM+.ymmmmmNNNNNMm/smoyooshdmNNmmdyo./MMMMMm-../dNMMMNy-...MMMMh...NMMMMdmNMNNNm:..+MMMm...-ymNNNd:..-MMMMNhmMNNNNy...mMMMMmooosmNMMNmsoosMMMyooyNMMMMNdooyMMMhoooyNMMMMNdoood"
-  print "MM:.mmmmddddddhhhssdy+dMMMMMMMMMMMM--MMMMMs..-NMMMMMMMs...MMMMh...NMMMmyo//////-../MMMm...hMMMMMMh...MMMMds+//////...dMMMMmoooNMMMMMMhoosMMmoooyyyyyyyyoooNMMhoosMMMMMMMMhoos"
-  print "MM/.NMMMMMMMMMMMNohmdohdddmmmNNNNNN--MMMMMs..-NMMMMMMMs...MMMMh...NMMh-.-oyyyyy:../MMMm...dMMMMMMd...MMM+../syyyyy...dMMMMmoooMMMMMMMhoosMMmoooyhhhhhhhhhhNMMhoooNMMMMMMMhoos"
-  print "MMs.odmNMMMMNmdyoooys/mNNmmmdddddds.+MMMMMN:../dNMMMmy-...MMMMh...NMMo../NMMMNd-../MMMm...dMMMMMMd...MMN-..hMMMMms...dMMMMmoooMMMMMMMhoosMMMyoosmNMMMMNdmMMMMhoooymNMMMNhoood"
-  print "MMN:.sysossossydNdsNMy+yNMMMMMMMMN:-mMMMMMMm+-.-://:--/...MMMMh...NMMm/..:///:--../MMMm...dMMMMMMd...MMMy-.-://:--...dMMMMmoooMMMMMMMhoosMMMMdsoossyysooyNMMMhooosossssooosmM"
-  print "MMMm-:dMMMMMMMMMdyNMMMNhooydNMMMm:-dMMMMMMMMMNhso+oshmmsssMMMMmsssNMMMNdso+osymyssyMMMNsssmMMMMMMNsssMMMMNhso+oshNsssmMMMMNhhhMMMMMMMmhhhMMMMMNmdhhhhhmNMMMMMhoosMNdhhhhdNMMM"
-  print "MMMMm/-sNMMMMNdyhMMMMMMMMNdhsso:-/mMMMMMMMMMMMMMMMMMMMMMMMMNNNMNNNNNNNNNMNNNMNNMMNNMNNMNNNNNMNNNNNNNMNNMMMNNMNNNNNMNNMNNNNMMNNNNNNNNNNNNMNNNNNNNNNNNNNNMNNMMMhoosMMMMMMMMMMMM"
-  print "MMMMMMh/-shhhhmNMMMMMMMMMMMMms::yNMMMMMMMMMMMMMMMMMMMMMMMMM Implemented in python by Vince Croft vincent.croft@cern.ch : New York Univerity             MNMMMhoosMMMMMMMMMMMM"
-  print "MMMMMMMMd+::ohmMMMMMMMMMmhs/:+hNMMMMMMMMMMMMMMMMMMMMMMMMMMM Based on RooUnfold hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html written by Tim Ayde MMMMMNNNNMMMMMMMMMMMM"
-  print "MMMMMMMMMMNds+/:://///:-/+sdNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  print "MMMMMMMMMMMMMMMMMNNNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"

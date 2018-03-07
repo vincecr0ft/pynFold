@@ -1,10 +1,10 @@
 import pymc as mc
 from numpy import random, dot, array, inf
 
-class Fold(object):
+class fbu(object):
     """A class to perform a MCMC sampling.
     
-    Orriginal implementation found here https://github.com/gerbaudo/fbu
+    [more detailed description should be added here]
     
     All configurable parameters are set to some default value, which
     can be changed later on, but before calling the `run` method.
@@ -54,7 +54,7 @@ class Fold(object):
         random.seed(self.rndseed)
         return random.poisson(data)
     #__________________________________________________________
-    def run(self):
+    def __call__(self):
         self.validateinput()
         data = self.data
         data = self.fluctuate(data) if self.rndseed>=0 else data
@@ -139,7 +139,7 @@ class Fold(object):
             mcmc.use_step_method(mc.AdaptiveMetropolis,truth+allnuisances)
             mcmc.sample(self.nMCMC,burn=self.nBurn,thin=self.nThin)
 
-        mc.Matplot.plot(mcmc)
+#        mc.Matplot.plot(mcmc)
         
         self.trace = [mcmc.trace('truth%d'%bin)[:] for bin in xrange(truthdim)]
         self.nuisancestrace = {}
