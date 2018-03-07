@@ -1,5 +1,5 @@
 from fold import fold
-from histogram import OneHist
+from histogram import f1x
 import numpy as np
 
 class PynFoldIterative:
@@ -10,7 +10,7 @@ class PynFoldIterative:
             print "not a valid pynfold response!"
             pass
         try:
-            self.measured = OneHist(measured)
+            self.measured = f1x(measured)
         except:
             print "could not convert that measured histogram"
             pass
@@ -19,7 +19,7 @@ class PynFoldIterative:
 
     def unfold(self):
         meas = self.measured.x # the bin contents of the measured histograms
-        M = self.measured.nbins# the number of bins to be predicted                                                                  
+        M = self.measured.npoints# the number of points to be predicted                                                                  
         mu = [meas.sum()/M for i in range(M)]
         p = [1./M for i in range(M)]
         R = self.fold.fold.x
@@ -41,7 +41,7 @@ class PynFoldIterative:
 
             self.reco = mu     
             
-    def reco_hist(self):
+    def reco_dist(self):
         if self.unfolded: return self.reco
         else:
             self.unfold()

@@ -1,12 +1,12 @@
 import numpy as np
-from histogram import OneHist, TwoHist
+from histogram import f1x, Axy
 
 class fold:
-  def __init__(self, nbins = None, xlo = None, xhi = None, measured = None, truth = None):
-    if nbins and xlo and xhi:
-      self.measured = OneHist(nbins=nbins, xlo = xlo, xhi = xhi)
-      self.truth = OneHist(nbins=nbins, xlo = xlo, xhi = xhi)
-      self.fold = TwoHist(nbins=nbins, xlo = xlo, xhi = xhi)
+  def __init__(self, npoints = None, xlo = None, xhi = None, measured = None, truth = None):
+    if npoints and xlo and xhi:
+      self.measured = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+      self.truth = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+      self.fold = Axy(npoints=npoints, xlo = xlo, xhi = xhi)
 
   def fill(self, xr, xt):
     if isinstance(xr,float) and isinstance(xt,float):
@@ -31,8 +31,8 @@ def printdiana():
   print "MMs.odmNMMMMNmdyoooys/mNNmmmdddddds.+MMMMMN:../dNMMMmy-...MMMMh...NMMo../NMMMNd-../MMMm...dMMMMMMd...MMN-..hMMMMms...dMMMMmoooMMMMMMMhoosMMMyoosmNMMMMNdmMMMMhoooymNMMMNhoood"
   print "MMN:.sysossossydNdsNMy+yNMMMMMMMMN:-mMMMMMMm+-.-://:--/...MMMMh...NMMm/..:///:--../MMMm...dMMMMMMd...MMMy-.-://:--...dMMMMmoooMMMMMMMhoosMMMMdsoossyysooyNMMMhooosossssooosmM"
   print "MMMm-:dMMMMMMMMMdyNMMMNhooydNMMMm:-dMMMMMMMMMNhso+oshmmsssMMMMmsssNMMMNdso+osymyssyMMMNsssmMMMMMMNsssMMMMNhso+oshNsssmMMMMNhhhMMMMMMMmhhhMMMMMNmdhhhhhmNMMMMMhoosMNdhhhhdNMMM"
-  print "MMMMm/-sNMMMMNdyhMMMMMMMMNdhsso:-/mMMMMMMMMMMMMMMMMMMMMMMMMNNNMNNNNNNNNNMNNNMNNMMNNMNNMNNNNNMNNNNNNNMNNMMMNNMNNNNNMNNMNNNNMMNNNNNNNNNNNNMNNNNNNNNNNNNNNMNNMMMhoosMMMMMMMMMMMM"
-  print "MMMMMMh/-shhhhmNMMMMMMMMMMMMms::yNMMMMMMMMMMMMMMMMMMMMMMMMM Implemented in python by Vince Croft vincent.croft@cern.ch : New York Univerity             MNMMMhoosMMMMMMMMMMMM"
+  print "MMMMm/-sNMMMMNdyhMMMMMMMMNdhsso:-/mMMMMMMMMMMMMMMMMMMMMMMMM Implemented in python by Vince Croft vincent.croft@cern.ch : New York Univerity             NNMMMhoosMMMMMMMMMMMM"
+  print "MMMMMMh/-shhhhmNMMMMMMMMMMMMms::yNMMMMMMMMMMMMMMMMMMMMMMMMM fbu by Clement Helsens, Davide Gerbaudo, & Francesco Rubbo https://github.com/gerbaudo/fbu  MNMMMhoosMMMMMMMMMMMM"
   print "MMMMMMMMd+::ohmMMMMMMMMMmhs/:+hNMMMMMMMMMMMMMMMMMMMMMMMMMMM Based on RooUnfold hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html written by Tim Ayde MMMMMNNNNMMMMMMMMMMMM"
   print "MMMMMMMMMMNds+/:://///:-/+sdNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
   print "MMMMMMMMMMMMMMMMMNNNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
