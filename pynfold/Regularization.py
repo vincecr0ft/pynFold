@@ -1,5 +1,10 @@
 from pymc import Potential,Container
 
+
+"""
+written by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo https://github.com/gerbaudo/fbu
+"""
+
 from tikhonov import tikhonov
 potentialdict = {
     'Tikhonov':tikhonov,

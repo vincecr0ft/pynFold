@@ -4,7 +4,7 @@ from numpy import random, dot, array, inf
 class Fold(object):
     """A class to perform a MCMC sampling.
     
-    [more detailed description should be added here]
+    Orriginal implementation found here https://github.com/gerbaudo/fbu
     
     All configurable parameters are set to some default value, which
     can be changed later on, but before calling the `run` method.
@@ -139,7 +139,7 @@ class Fold(object):
             mcmc.use_step_method(mc.AdaptiveMetropolis,truth+allnuisances)
             mcmc.sample(self.nMCMC,burn=self.nBurn,thin=self.nThin)
 
-#        mc.Matplot.plot(mcmc)
+        mc.Matplot.plot(mcmc)
         
         self.trace = [mcmc.trace('truth%d'%bin)[:] for bin in xrange(truthdim)]
         self.nuisancestrace = {}

@@ -1,5 +1,9 @@
 import pymc
 
+"""
+written by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo https://github.com/gerbaudo/fbu
+"""
+
 priors = {
     }
 
