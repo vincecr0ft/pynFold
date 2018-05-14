@@ -1,12 +1,13 @@
 from pynfold import fold
 import numpy as np
 from matplotlib import pyplot as plt
-import ROOT
+#import ROOT
 
 f = fold.fold()
 
 
 def smear(xt):
+    # type: float -> float
     xeff = 0.3 + (1.0 - 0.3) / 20. * (xt + 10.0)  # efficiency
     x = np.random.rand()
     if x > xeff: return None
@@ -17,7 +18,7 @@ def smear(xt):
 f.set_response(10, -10, 10)
 
 for i in xrange(100000):
-    xt = ROOT.gRandom.BreitWigner(0.3, 2.5)
+    xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
     if x != None:
         f.fill(x, xt)
@@ -31,16 +32,17 @@ print 'x ', f.truth.x
 f.data = f.measured.x
 # print 'gauss is',gauss
 # f.data, bins = np.histogram(gauss, bins=4)
+f.data = [100,150,200,250,300,350.400, 450,500, 550]
 print 'data is', f.data
 # f.response = [[0.0, 0.013, 0.0, 0.0], [0.0, 0.6, 0.49, 0.0], [0.0, 0.0, 0.223, 0.69], [0.0, 0.0, 0.0, 0.186]]
-f.data = np.linspace(1000, 5000, 10).tolist()
+
 # f.response = [[0.1,0.0,0.0,0.0],[0.0,0.1,0.0,0.0],[0.0,0.0,0.1,0.0],[0.0,0.0,0.0,0.1]]
 
 f.run()
 trace = f.fbu.trace
 print trace
 
-plt.hist(trace[1], bins=200, alpha=0.85, normed=True)
+plt.hist(trace[1], bins=20, alpha=0.85, normed=True)
 plt.ylabel('probability')
 plt.show()
 

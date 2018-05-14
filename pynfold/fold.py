@@ -54,7 +54,10 @@ class fold:
     self.truth.fill(xt)
 
   def set_response(self, npoints, xlo, xhi):
-    # type: (object, object, object) -> object
+    # type: (int, float, float) -> (f1x, f1x, Axy)
+    """
+    :rtype: None
+    """
     self.measured = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
     self.truth = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
     self.response = Axy(npoints=npoints, xlo = xlo, xhi = xhi)
