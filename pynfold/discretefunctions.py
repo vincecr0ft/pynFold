@@ -2,8 +2,11 @@ import numpy as np
 
 class f1x:
   def __init__(self, inputarray=None, xlo=0, xhi=10, npoints = 10, points=None):
-
-    if isinstance(points, list) or isinstance(points, np.ndarray):
+    if points is None and inputarray is not None:
+        npoints = len(inputarray)
+        self.npoints = npoints
+        self.points = np.linspace(0,npoints,npoints+1)
+    elif isinstance(points, list) or isinstance(points, np.ndarray):
       self.npoints = len(points) - 1
       self.points = np.asarray(points)
       self.x = np.zeros(self.npoints)
@@ -11,7 +14,7 @@ class f1x:
       self.npoints = npoints
       self.points = np.linspace(xlo, xhi, npoints+1)
       self.x = np.zeros(npoints, dtype=float)
-      
+
     if inputarray is None:
       return
 
@@ -20,40 +23,43 @@ class f1x:
     elif isinstance(inputarray, tuple):
       if len(inputarray) == 2 and isinstance(inputarray[0], np.ndarray):
         self.loadNPhist(inputarray)
+    elif isinstance(inputarray, list):
+      self.loadList(inputarray)
     else:
       self.loadROOT(inputarray)
 
     self.nevents = self.x.sum()
 
   def loadNP(self, inputarray):
-    ahist = np.histogram(inputarray,bins=self.points)
-    x, points = ahist
-    self.x = np.asarray(x, dtype=float)
-    
+    self.x = np.asarray(inputarray, dtype=float)
 
   def loadNPhist(self, inputarray):
     x, points = inputarray
     self.x = np.asarray(x, dtype=float)
     self.points = points
 
-  def loadROOT(self, inputarray):
-    try: import ROOT
-    except:
-      print "no root version"
-      pass
+  def loadList(self, inputarray):
+    self.x = np.asarray(inputarray, dtype=float)
+    self.points = np.linspace(0,len(inputarray)+1,len(inputarray)+1)
+
+#  def loadROOT(self, inputarray):
+#    try: import ROOT
+#    except:
+#      print "no root version"
+#      pass
     
-    if isinstance(inputarray, ROOT.TH1D):
-      npoints = inputarray.GetNbinsX()
-      self.npoints = npoints
-      ax = inputarray.GetXaxis()
-      points = []
-      contents = []
-      for i in range(npoints+1):
-        points.append(ax.GetBinUpEdge(i))
-        if i > 0:
-          contents.append(inputarray.GetBinContent(i))
-      self.points = np.asarray(points)
-      self.x = np.asarray(contents, dtype=float)
+#    if isinstance(inputarray, ROOT.TH1D):
+#      npoints = inputarray.GetNbinsX()
+#      self.npoints = npoints
+#      ax = inputarray.GetXaxis()
+#      points = []
+#      contents = []
+#      for i in range(npoints+1):
+#        points.append(ax.GetBinUpEdge(i))
+#        if i > 0:
+#          contents.append(inputarray.GetBinContent(i))
+#      self.points = np.asarray(points)
+#      self.x = np.asarray(contents, dtype=float)
 
   def fill(self, newevent):
     tmphist = np.histogram([newevent], self.points)

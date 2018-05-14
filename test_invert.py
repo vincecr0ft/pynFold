@@ -1,7 +1,6 @@
 from pynfold import fold
 import numpy as np
 from matplotlib import pyplot as plt
-# import ROOT
 
 def smear(xt):
     # type: float -> float
@@ -12,8 +11,8 @@ def smear(xt):
     return xt + xsmear
 
 
-f = fold()
-f.set_response(8, -10, 10)
+f = fold(method='invert')
+f.set_response(40, -10, 10)
 
 for i in xrange(100000):
     xt = np.random.normal(0.3, 2.5)
@@ -23,12 +22,13 @@ for i in xrange(100000):
     else:
         f.miss(xt)
 
-f.data = [100,150,200,250,300,350,400,450]
+f.data = f.measured.x
+plt.plot(range(40), f.data, label='data')
 
 f.run()
-trace = f.fbu.trace
-print trace
-
-plt.hist(trace[1], bins=20, alpha=0.85, normed=True)
-plt.ylabel('probability')
+print 'the hist is', f.invert.reco_hist()
+h = f.invert.reco_hist()
+plt.plot(range(40), h, label='inverted')
+plt.plot(range(40), f.truth.x, label='truth')
+plt.legend()
 plt.show()

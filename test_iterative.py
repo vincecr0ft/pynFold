@@ -1,6 +1,6 @@
 from pynfold import fold
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 # import ROOT
 
 def smear(xt):
@@ -11,11 +11,11 @@ def smear(xt):
     xsmear = np.random.normal(-2.5, 0.2)
     return xt + xsmear
 
+f = fold(method = 'iterative')
+f.set_response(2, -10, 10)
+f.iterations = 4
 
-f = fold()
-f.set_response(8, -10, 10)
-
-for i in xrange(100000):
+for i in xrange(10):
     xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
     if x != None:
@@ -23,12 +23,7 @@ for i in xrange(100000):
     else:
         f.miss(xt)
 
-f.data = [100,150,200,250,300,350,400,450]
+f.data = np.asarray([10,10])
+print 'data is', f.data
 
 f.run()
-trace = f.fbu.trace
-print trace
-
-plt.hist(trace[1], bins=20, alpha=0.85, normed=True)
-plt.ylabel('probability')
-plt.show()
