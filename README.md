@@ -8,11 +8,9 @@ The base algorithm implemented here is the fully basian unfolding method based o
 
 Unfolding relates to the problem of estimating probability distributions in cases where no parametric form is available, and where the data are subject to additional random fluctuations due to limited resolution. The same mathematics can be found under the general heading of inverse problems, and is also called deconvolution or unsmearing.
 
-$$
-f_\mathrm{meas}(x) = \int R(x|y) f_\mathrm{true}(y)dy
-$$
+![integral equation](https://wikimedia.org/api/rest_v1/media/math/render/svg/dbba1aee3760825a222253bad7fab68e9f0437dd)
 
-when $f(x)$ and $R(x|y)$ are known. This type of equation is also known as the Fredholm integral of the first kind. The Kernel $R$ acts as a smoothing matrix in the forward detector and we can interpret its elements as a matrix of probabilites, strictly positive between 0 and one. Inverting the matrix (if possible) resutls in strictly non-probabilistic terms that instead of smothing add large high frequency components due to arbitrarily small fluctuations. The goal of unfolding is to impose some knowledge about the smoothness of this matrix onto the inversion to suppress such high frequency elements.   
+when *g(t)* and *K(t|s)* are known. This type of equation is also known as the [Fredholm integral](https://en.wikipedia.org/wiki/Fredholm_integral_equation) of the first kind. The Kernel *K*, acts as a smoothing matrix in the forward detector and we can interpret its elements as a matrix of probabilites, strictly positive between 0 and one. Inverting the matrix (if possible) resutls in strictly non-probabilistic terms that instead of smothing add large high frequency components due to arbitrarily small fluctuations. The goal of unfolding is to impose some knowledge about the smoothness of this matrix onto the inversion to suppress such high frequency elements.   
 
 This project is currently under development. If you would like to be involved please contact vincent.croft at cern.ch or contact me on slack. 
 
