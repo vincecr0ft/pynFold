@@ -2,6 +2,7 @@ from discretefunctions import f1x
 import numpy as np
 from scipy.sparse.linalg import lsqr
 
+
 class invert:
     def __init__(self, response, measured):
         self.response = np.matrix(response)

@@ -2,6 +2,7 @@ from pynfold import fold
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 def smear(xt):
     # type: float -> float
     xeff = 0.3 + (1.0 - 0.3) / 20. * (xt + 10.0)  # efficiency
@@ -9,6 +10,7 @@ def smear(xt):
     if x > xeff: return None
     xsmear = np.random.normal(-2.5, 0.2)
     return xt + xsmear
+
 
 dim = 40
 f = fold(method='invert')
@@ -22,13 +24,11 @@ for i in xrange(10000):
     else:
         f.miss(xt)
 
-
 f.data = f.measured.x
-print 'data',f.data
-
+print 'data', f.data
 
 fig, ax = plt.subplots()
-#fig.facecolor = 'white'
+# fig.facecolor = 'white'
 ax.plot(range(dim), f.data, label='data')
 
 f.run()
@@ -36,12 +36,12 @@ print 'the hist is', f.invert.reco_hist()
 h = f.invert.reco_hist()
 print 'truth', f.truth.x
 
-ax.plot(np.linspace(0,dim,dim/2), h, marker='o', label='inverted')
-ax.plot(np.linspace(0,dim,dim/2), f.truth.x, label='truth')
+ax.plot(np.linspace(0, dim, dim / 2), h, marker='o', label='inverted')
+ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
 
 left, bottom, width, height = [0.08, 0.55, 0.35, 0.35]
 ax2 = fig.add_axes([left, bottom, width, height])
-ax2.imshow(np.matrix(f.response).T,interpolation='nearest', origin='low',
+ax2.imshow(np.matrix(f.response).T, interpolation='nearest', origin='low',
            extent=[f.xlo, f.xhi, f.xlo, f.xhi], cmap='Reds')
 plt.title(r"$R(x_\mathrm{meas}|y_\mathrm{true})$")
 
