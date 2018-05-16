@@ -91,20 +91,22 @@ class f1x:
         self.x += np.asarray(contents, dtype=float)
 
 class Axy:
-  def __init__(self, inputarray=None, xlo=0, xhi=10, npoints = 10, points=None):
-    if isinstance(points, list) or isinstance(points, np.ndarray):
-      self.npoints = len(points) - 1
-      self.points = np.asarray(points)
-      self.x = np.zeros((self.npoints,self.npoints), dtype=float)
-    else:
-      self.npoints = npoints
-      self.points = np.linspace(xlo, xhi, npoints+1)
-      self.x = np.zeros((self.npoints,self.npoints), dtype=float)
+    def __init__(self, inputarray=None, xlo=0, xhi=10, npoints = 10, points=None):
+        if isinstance(points, list) or isinstance(points, np.ndarray):
+            self.npoints = len(points) - 1
+            self.points = np.asarray(points)
+            self.tpoints = np.linspace(self.points[0],self.points[-1],int(self.npoints/2))
+            self.x = np.zeros((self.npoints,int(self.npoints/2)))
+        else:
+            self.npoints = npoints
+            self.points = np.linspace(xlo, xhi, npoints+1)
+            self.tpoints = np.linspace(xlo, xhi, int(npoints/2)+1)
+            self.x = np.zeros((self.npoints,int(self.npoints/2)))
       
-    if inputarray is None:
-      return
+        if inputarray is None:
+            return
 
-  def fill(self, xm, xt):
-    tmphist = np.histogram2d([xm],[xt], (self.points, self.points))
-    self.x += np.asarray(tmphist[0],dtype=float)
+    def fill(self, xm, xt):
+        tmphist = np.histogram2d([xm],[xt], (self.points, self.tpoints))
+        self.x += np.asarray(tmphist[0],dtype=float)
 

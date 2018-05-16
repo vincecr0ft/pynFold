@@ -19,7 +19,7 @@ class fold:
     self.data = data
     if npoints and xlo and xhi:
       self.measured = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
-      self.truth = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+      self.truth = f1x(npoints=int(npoints), xlo = xlo, xhi = xhi)
       self.response = Axy(npoints=npoints, xlo = xlo, xhi = xhi)
     self.FilledResponse = False
 
@@ -27,8 +27,9 @@ class fold:
 
   def run(self):
     if self.FilledResponse and not isinstance(self.response,list):
-      response_hist = np.matrix(self.response.x, dtype= float)
-      response_matrix =  np.divide(response_hist, self.truth.x[None,:], out=np.zeros_like(response_hist), where=self.truth.x != 0)
+      self.response_hist = np.matrix(self.response.x, dtype= float)
+      truth_hist = np.matrix(self.truth.x)
+      response_matrix = np.divide(self.response_hist, truth_hist, out=np.zeros_like(self.response_hist), where=truth_hist != 0)
       self.response = response_matrix.tolist()
 
     if 'fbu' in self.method:
@@ -41,22 +42,22 @@ class fold:
         else:
           upper.append(100)
           lower.append(0)
-      print 'data {}, response {}'.format(self.data, self.response)
       upper = (np.ones(len(self.data))*3000).tolist()
       lower = (np.zeros(len(self.data))).tolist()
-
       self.fbu = fbu(data=self.data, lower=lower, upper=upper, response=self.response)
       self.fbu()
+
     if 'iterative' in self.method:
         self.iterative = iterative(self, self.data, self.iterations)
         self.iterative()
+
     if 'invert' in self.method:
         self.invert = invert(self.response, self.data)
         self.invert()
+
     if 'regularised' in self.method:
         self.regularised = regularised(self.response, self.data, self.tau)
         self.regularised()
-
 
   def fill(self, xr, xt):
     self.FilledResponse = True
@@ -77,6 +78,8 @@ class fold:
     """
     :rtype: None
     """
+    self.xhi = xhi
+    self.xlo = xlo
     self.measured = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
-    self.truth = f1x(npoints=npoints, xlo = xlo, xhi = xhi)
+    self.truth = f1x(npoints=int(npoints/2), xlo = xlo, xhi = xhi)
     self.response = Axy(npoints=npoints, xlo = xlo, xhi = xhi)
