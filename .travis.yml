@@ -18,6 +18,8 @@ python:
   - '2.7'
   - '3.6'
 
+before_install:
+- sudo apt-get install liblapack-dev gfortran libblas-dev
 
 install:
 - travis_retry pip install $PIP_DEPS
