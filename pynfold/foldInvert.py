@@ -9,7 +9,7 @@ class invert:
         try:
             self.measured = f1x(inputarray=measured)
         except:
-            print type(measured)
+            print (type(measured))
             print ("could not convert that measured histogram")
             pass
         self.unfolded = False
