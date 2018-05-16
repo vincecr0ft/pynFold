@@ -46,4 +46,4 @@ ax2.yaxis.tick_right()
 plt.title(r"$R(x_\mathrm{meas}|y_\mathrm{true})$")
 
 ax.legend()
-plt.savefig('pynfold/tests/tikonov.png')
+plt.savefig('tikonov.png')
