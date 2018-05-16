@@ -1,4 +1,4 @@
-from discretefunctions import f1x
+from .discretefunctions import f1x
 import numpy as np
 from scipy.sparse.linalg import lsqr
 
