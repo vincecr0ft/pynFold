@@ -3,7 +3,6 @@ from .version import __version__
 
 import numpy as np
 from .discretefunctions import f1x, Axy
-from .banner import printdiana
 from .foldFBU import fbu
 from .foldIterative import iterative
 from .foldInvert import invert
