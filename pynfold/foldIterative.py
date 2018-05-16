@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 from discretefunctions import f1x
-=======
-from fold import fold
-from histogram import f1x
->>>>>>> master
 import numpy as np
 
 
