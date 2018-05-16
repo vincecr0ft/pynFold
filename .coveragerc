@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = pynfold/*
+include = pynfold/*
+omit = */setup.py
+[report]
+include = pynfold/*

@@ -10,7 +10,7 @@ class invert:
             self.measured = f1x(inputarray=measured)
         except:
             print type(measured)
-            print "could not convert that measured histogram"
+            print ("could not convert that measured histogram")
             pass
         self.unfolded = False
 
@@ -20,8 +20,8 @@ class invert:
             inverse = np.linalg.inv(self.response)
             self.reco = (inverse * meas.T).T
         except:
-            print 'matrix not invertable'
-            print 'using least squares'
+            print ('matrix not invertable')
+            print ('using least squares')
             self.reco = lsqr(self.response, meas)[0]
         self.unfolded = True
 

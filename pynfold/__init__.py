@@ -1,14 +1,13 @@
-"""
-Here be dragons.
-"""
+from __future__ import absolute_import, division, print_function
+from .version import __version__
 
 import numpy as np
-from discretefunctions import f1x, Axy
-from banner import printdiana
-from foldFBU import fbu
-from foldIterative import iterative
-from foldInvert import invert
-from foldRegularised import regularised
+from .discretefunctions import f1x, Axy
+from .banner import printdiana
+from .foldFBU import fbu
+from .foldIterative import iterative
+from .foldInvert import invert
+from .foldRegularised import regularised
 
 
 class fold:
@@ -63,7 +62,7 @@ class fold:
     def fill(self, xr, xt):
         self.FilledResponse = True
         if self.response is None or isinstance(self.response, list):
-            print "response matrix parameters not set. please call set_response(n_points, x_low, x_high)"
+            print ("response matrix parameters not set. please call set_response(n_points, x_low, x_high)")
         if isinstance(xr, float) and isinstance(xt, float):
             self.measured.fill(xr)
             self.truth.fill(xt)
@@ -72,7 +71,7 @@ class fold:
     def miss(self, xt):
         self.FilledResponse = True
         if self.response is None or isinstance(self.response, list):
-            print "response matrix parameters not set. please call set_response(n_points, x_low, x_high)"
+            print ("response matrix parameters not set. please call set_response(n_points, x_low, x_high)")
         self.truth.fill(xt)
 
     def set_response(self, npoints, xlo, xhi):

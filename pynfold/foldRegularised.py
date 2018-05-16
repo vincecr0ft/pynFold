@@ -11,7 +11,7 @@ class regularised:
             self.measured = f1x(inputarray=measured)
         except:
             print type(measured)
-            print "could not convert that measured histogram"
+            print ("could not convert that measured histogram")
             pass
         self.unfolded = False
 

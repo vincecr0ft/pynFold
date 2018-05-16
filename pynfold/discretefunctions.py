@@ -47,7 +47,7 @@ class f1x:
         try:
             import ROOT
         except:
-            print "no root version"
+            print ("no root version")
             pass
 
         if isinstance(inputarray, ROOT.TH1D):
@@ -72,7 +72,7 @@ class f1x:
             if self.points.all() == newfunc.points.all():
                 self.x += newfunc.x
             else:
-                print "functions not the same shape..."
+                print ("functions not the same shape...")
         elif isinstance(newfunc, tuple):
             if len(newfunc) == 2 and isinstance(newfunc[0], np.ndarray):
                 self.x += newfunc[0]
@@ -82,7 +82,7 @@ class f1x:
             try:
                 import ROOT
             except:
-                print "no root version"
+                print ("no root version")
                 pass
             if isinstance(newfunc, ROOT.TH1D):
                 npoints = newfunc.GetNpointsX()

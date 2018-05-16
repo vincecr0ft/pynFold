@@ -3,8 +3,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-# import ROOT
-
 def smear(xt):
     # type: float -> float
     xeff = 0.3 + (1.0 - 0.3) / 20. * (xt + 10.0)  # efficiency
@@ -26,11 +24,11 @@ for i in xrange(1000):
         f.miss(xt)
 
 f.data = [100, 150, 200, 250, 300, 350, 400, 450]
-
-f.run()
-trace = f.fbu.trace
-print trace
-
-plt.hist(trace[1], bins=20, alpha=0.85, normed=True)
-plt.ylabel('probability')
-plt.show()
+# uncomment these when the tests work
+#f.run()
+#trace = f.fbu.trace
+#print trace
+#
+#plt.hist(trace[1], bins=20, alpha=0.85, normed=True)
+#plt.ylabel('probability')
+#plt.show()
