@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 from discretefunctions import f1x
+=======
+from fold import fold
+from histogram import f1x
+>>>>>>> master
 import numpy as np
 
 
@@ -12,6 +17,7 @@ class iterative:
             pass
         self.iterations = iterations
         self.unfolded = False
+
 
     def __call__(self):
         self.meas = self.measured.x  # the bin contents of the measured histograms
