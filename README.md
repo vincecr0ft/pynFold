@@ -56,7 +56,7 @@ f.method = 'invert'
 f.run()
 hist = f.invert.reco_hist()
 ```
-![matrix inversion]("doc/invert.png")
+![matrix inversion](./doc/invert.png)
 
 This project is currently under development. If you would like to be involved please contact vincent.croft at cern.ch or contact me on slack. 
 
