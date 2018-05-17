@@ -50,14 +50,34 @@ f.run()
 ```
 
 ### different algorithms available
-Simple matrix inversion
+#### Simple matrix inversion
 ```
 f.method = 'invert'
 f.run()
 hist = f.invert.reco_hist()
 ```
 ![matrix inversion](./doc/invert.png)
+if the matrix is non-invertable the simple least squares estimate is used.
 
+#### Damped least squares - Tikonov regularisation
+```
+f.method = 'regularised'
+f.tau = 1. # regularisation term
+f.run()
+hist = f.regularised.reco_hist()
+```
+![regularised least squares](./doc/tikonov.png)
+
+#### D'Agostini Iterative (a.k.a - 'Bayesian' unfolding)
+```
+f.method = 'iterative'
+f.iterations = 4  # number of iterations performed
+f.run()
+hist = f.iterative.reco_hist()
+```
+![D'agostini regularisation](./doc/iterative.png)
+
+### Status
 This project is currently under development. If you would like to be involved please contact vincent.croft at cern.ch or contact me on slack. 
 
 this project depends on numpy, scipy and pymc
