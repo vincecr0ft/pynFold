@@ -1,4 +1,5 @@
 # pynFold - Unfolding with python
+[![Build Status](https://travis-ci.org/vincecr0ft/pynFold.svg?branch=master)](https://travis-ci.org/vincecr0ft/pynFold)
 
 ![Oh, crumbs!](https://c1.staticflickr.com/1/588/23404929566_5c9dfed1ef_o.jpg) 
 
