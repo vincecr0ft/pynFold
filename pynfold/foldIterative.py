@@ -1,49 +1,48 @@
-from fold import fold
-from histogram import f1x
+from .discretefunctions import f1x
 import numpy as np
 
-class PynFoldIterative:
-    def __init__(self, thisfold, measured, iterations = 4):
-        if isinstance(thisfold, fold):
-            self.fold = thisfold
-        else:
-            print "not a valid pynfold response!"
-            pass
+
+class iterative:
+    def __init__(self, thisfold, measured, iterations=4):
+        self.fold = thisfold
         try:
             self.measured = f1x(measured)
-        except:
-            print "could not convert that measured histogram"
+        except Exception as e:
+            print(e)
+            print("could not convert that measured histogram")
             pass
         self.iterations = iterations
         self.unfolded = False
 
-    def unfold(self):
-        meas = self.measured.x # the bin contents of the measured histograms
-        M = self.measured.npoints# the number of points to be predicted                                                                  
-        mu = [meas.sum()/M for i in range(M)]
-        p = [1./M for i in range(M)]
-        R = self.fold.fold.x
-        truth = self.fold.truth.x
-        nt = self.fold.nt
-        epsilons = [R[i,:].sum()/truth[i] for i in range(nt)]
-        measured = self.measured.x
-        for iteration in range(self.iterations):
-            for i in range(M):    # which bin in the reco distribution
-                sumoverj = 0.0
-                for j in range(nt): #which bin in the true distribution
-                    sumoverk = np.asarray([R[j,k]*p[k] for k in range(M)]).sum()
-                    if sumoverk > 0: 
-                        sumoverj += measured[j]*R[j,i]*p[i]/sumoverk
-                    else: sumoverj += 0.0
-                mu[i] = sumoverj/epsilons[i] if epsilons[i] > 0 else 0
-            for j in range(M):                
-                p[j] = mu[j]/np.asarray(mu).sum() if np.asarray(mu).sum() > 0 else 0.
+    def __call__(self):
+        self.meas = self.measured.x  # bin contents of measured histogram
+        self.R = np.asarray(self.fold.response)
+        self.truth = self.fold.truth.x
+        self.epsilons = np.asarray(
+            self.fold.response_hist).sum(axis=0) / self.truth
+        mu = np.asarray([self.meas.sum() / len(self.truth)
+                         for i in range(len(self.truth))])
+        for i in range(self.iterations):
+            mu = self.evaluate_mus(mu)
+        self.reco = mu
+        self.unfolded = True
 
-            self.reco = mu     
-            
-    def reco_dist(self):
-        if self.unfolded: return self.reco
-        else:
-            self.unfold()
+    def reco_hist(self):
+        if self.unfolded:
             return self.reco
-            
+        else:
+            self.__call__()
+            return self.reco
+
+    def evaluate_mus(self, mu):
+        p = mu / mu.sum()
+        return divide_zeros(
+            (divide_zeros(
+                (self.R * p),
+                (self.R * p).sum(axis=1)[:, None]
+            ) * self.meas[:, None]).sum(axis=0),
+            self.epsilons)
+
+
+def divide_zeros(A, B):
+    return np.divide(A, B, out=np.zeros_like(A), where=B != 0)
