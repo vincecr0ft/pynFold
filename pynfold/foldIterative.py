@@ -7,19 +7,21 @@ class iterative:
         self.fold = thisfold
         try:
             self.measured = f1x(measured)
-        except:
+        except Exception as e:
+            print(e)
             print ("could not convert that measured histogram")
             pass
         self.iterations = iterations
         self.unfolded = False
 
-
     def __call__(self):
-        self.meas = self.measured.x  # the bin contents of the measured histograms
+        self.meas = self.measured.x  # bin contents of measured histogram
         self.R = np.asarray(self.fold.response)
         self.truth = self.fold.truth.x
-        self.epsilons = np.asarray(self.fold.response_hist).sum(axis=0) / self.truth
-        mu = np.asarray([self.meas.sum() / len(self.truth) for i in range(len(self.truth))])
+        self.epsilons = np.asarray(
+            self.fold.response_hist).sum(axis=0) / self.truth
+        mu = np.asarray([self.meas.sum() / len(self.truth)
+                         for i in range(len(self.truth))])
         for i in range(self.iterations):
             mu = self.evaluate_mus(mu)
         self.reco = mu
@@ -37,7 +39,8 @@ class iterative:
         return divide_zeros(
             (divide_zeros(
                 (self.R * p),
-                (self.R * p).sum(axis=1)[:, None]) * self.meas[:, None]).sum(axis=0),
+                (self.R * p).sum(axis=1)[:, None]
+            ) * self.meas[:, None]).sum(axis=0),
             self.epsilons)
 
 

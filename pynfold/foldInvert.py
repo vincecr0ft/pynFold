@@ -8,7 +8,8 @@ class invert:
         self.response = np.matrix(response)
         try:
             self.measured = f1x(inputarray=measured)
-        except:
+        except Exception as e:
+            print(e)
             print (type(measured))
             print ("could not convert that measured histogram")
             pass
@@ -19,7 +20,8 @@ class invert:
         try:
             inverse = np.linalg.inv(self.response)
             self.reco = (inverse * meas.T).T
-        except:
+        except Exception as e:
+            print(e)
             print ('matrix not invertable')
             print ('using least squares')
             self.reco = lsqr(self.response, meas)[0]

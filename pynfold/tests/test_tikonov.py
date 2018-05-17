@@ -7,7 +7,8 @@ def smear(xt):
     # type: float -> float
     xeff = 0.3 + (1.0 - 0.3) / 20. * (xt + 10.0)  # efficiency
     x = np.random.rand()
-    if x > xeff: return None
+    if x > xeff:
+        return None
     xsmear = np.random.normal(-2.5, 0.2)
     return xt + xsmear
 
@@ -19,7 +20,7 @@ f.set_response(dim, -10, 10)
 for i in xrange(100000):
     xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
-    if x != None:
+    if x is not None:
         f.fill(x, xt)
     else:
         f.miss(xt)
@@ -35,7 +36,8 @@ for i in np.linspace(0., 1.5, 5):
     f.tau = i
     f.run()
     h = f.regularised.reco_hist()
-    ax.plot(np.linspace(0, dim, dim / 2), h, marker='o', label=r'$\tau$ at {}'.format(i))
+    ax.plot(np.linspace(0, dim, dim / 2), h,
+            marker='o', label=r'$\tau$ at {}'.format(i))
 ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
 
 left, bottom, width, height = [0.08, 0.53, 0.35, 0.35]

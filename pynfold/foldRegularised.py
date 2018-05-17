@@ -9,7 +9,8 @@ class regularised:
         self.response = np.matrix(response)
         try:
             self.measured = f1x(inputarray=measured)
-        except:
+        except Exception as e:
+            print (e)
             print (type(measured))
             print ("could not convert that measured histogram")
             pass

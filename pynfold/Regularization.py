@@ -1,7 +1,8 @@
 from pymc import Potential, Container
 
 """
-written by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo https://github.com/gerbaudo/fbu
+written by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo
+https://github.com/gerbaudo/fbu
 """
 
 from tikhonov import tikhonov
@@ -19,7 +20,8 @@ class Regularization(object):
         if self.regname in potentialdict:
             self.function = potentialdict[self.regname]
         else:
-            print 'WARNING: potential name not found! Falling back to no potential...'
+            print ('WARNING: potential name not found!')
+            print ('Falling back to no potential...')
 
     def wrapper(self, truth=None, parameters={}):
         default_args = dict(value=truth)
@@ -31,7 +33,11 @@ class Regularization(object):
         ntotbins = len(truth)
         step = ntotbins / self.ndiffbins
         edges = [(ii, ii + step) for ii in range(0, ntotbins, step)]
-        potentials = [Potential(self.wrapper, self.regname, self.regname,
-                                {'truth': truth[start:end], 'parameters': params})
-                      for params, (start, end) in zip(self.parameterslist, edges)]
+        potentials = [Potential(self.wrapper,
+                                self.regname,
+                                self.regname,
+                                {'truth': truth[start:end],
+                                 'parameters': params})
+                      for params,
+                      (start, end) in zip(self.parameterslist, edges)]
         return Container(potentials)

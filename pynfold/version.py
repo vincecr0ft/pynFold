@@ -1,5 +1,4 @@
 from __future__ import absolute_import, division, print_function
-from os.path import join as pjoin
 
 # Format expected by setup.py and doc/source/conf.py: string of form "X.Y.Z"
 _version_major = 0
@@ -26,23 +25,40 @@ CLASSIFIERS = ["Development Status :: 3 - Alpha",
                "Topic :: Scientific/Engineering"]
 
 # Description should be a one-liner:e
-description = "pynFold: implementation of various solutions to unfoldng and the inverse problem "
+description = 'pynFold: implementation of various solutions to unfoldng\
+and the inverse problem '
 # Long description will go up on the pypi page
 long_description = """
 
 PynFold
 ========
-PynFold is a pythonic implementation of various solutions to unfolding and the inverse problem
+pynFold (pronounced pen-fold) is a pythonic implementation of (eventually)
+many of the RooUnfold ROOT Unfolding Framework aiming to compare unfolding
+methods with those provided outisde of high energy physics and to increase
+to robustness of a flexible re-usable codebase.
 
-pynFold (pronounced pen-fold) is a pythonic implementation of (eventually) many of the RooUnfold ROOT Unfolding Framework aiming to compare unfolding methods with those provided outisde of high energy physics and to increase robustness by eliminating dependencies on the ROOT libraries basing algorithms only on numpy and minimal additional libraries.
+The fbu algorithm implemented here is the fully basian unfolding method
+based code developed by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo
 
-The base algorithm implemented here is the fully basian unfolding method based on work by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo fbu
+Unfolding relates to the problem of estimating probability distributions
+in cases where no parametric form is available,
+and where the data are subject to additional random fluctuations due
+to limited resolution.
+The same mathematics can be found under the general heading of
+inverse problems, and is also called deconvolution or unsmearing.
 
-Unfolding relates to the problem of estimating probability distributions in cases where no parametric form is available, and where the data are subject to additional random fluctuations due to limited resolution. The same mathematics can be found under the general heading of inverse problems, and is also called deconvolution or unsmearing.
+This type of equation is also known as the Fredholm integral of the first kind.
+The Kernel K, acts as a smoothing matrix in the forward detector and
+we can interpret its elements as a matrix of probabilites,
+strictly positive between 0 and one.
+Inverting the matrix (if possible) resutls in strictly non-probabilistic terms
+that, instead of smothing, add large high frequency components due to
+arbitrarily small fluctuations.
+The goal of unfolding is to impose some knowledge about the smoothness of this
+matrix onto the inversion to suppress such high frequency elements.
 
-This type of equation is also known as the Fredholm integral of the first kind. The Kernel K, acts as a smoothing matrix in the forward detector and we can interpret its elements as a matrix of probabilites, strictly positive between 0 and one. Inverting the matrix (if possible) resutls in strictly non-probabilistic terms that instead of smothing add large high frequency components due to arbitrarily small fluctuations. The goal of unfolding is to impose some knowledge about the smoothness of this matrix onto the inversion to suppress such high frequency elements.
-
-This project is currently under development. If you would like to be involved please contact vincent.croft at cern.ch or contact me on slack.
+This project is currently under development.
+If you would like to be involved please contact vincent.croft at cern.ch.
 
 License
 =======
@@ -52,7 +68,8 @@ for usage, and a DISCLAIMER OF ALL WARRANTIES.
 
 All trademarks referenced herein are property of their respective holders.
 
-Copyright (c) 2018--, Vincent Alexander John Croft, New York University and DIANA-HEP
+Copyright (c) 2018--, Vincent Alexander Croft,
+New York University Department of Physics and DIANA-HEP
 """
 
 NAME = "pynfold"

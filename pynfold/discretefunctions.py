@@ -2,7 +2,11 @@ import numpy as np
 
 
 class f1x:
-    def __init__(self, inputarray=None, xlo=0, xhi=10, npoints=10, points=None):
+    def __init__(self,
+                 inputarray=None,
+                 xlo=0, xhi=10,
+                 npoints=10,
+                 points=None):
         if points is None and inputarray is not None:
             npoints = len(inputarray)
             self.npoints = npoints
@@ -46,7 +50,8 @@ class f1x:
     def loadROOT(self, inputarray):
         try:
             import ROOT
-        except:
+        except Exception as e:
+            print (e)
             print ("no root version")
             pass
 
@@ -81,13 +86,12 @@ class f1x:
         else:
             try:
                 import ROOT
-            except:
+            except Exception as e:
+                print(e)
                 print ("no root version")
                 pass
             if isinstance(newfunc, ROOT.TH1D):
                 npoints = newfunc.GetNpointsX()
-                ax = newfunc.GetXaxis()
-                points = []
                 contents = []
             for i in range(1, npoints + 1):
                 contents.append(float(newfunc.GetBinContent(i)))
@@ -95,11 +99,17 @@ class f1x:
 
 
 class Axy:
-    def __init__(self, inputarray=None, xlo=0, xhi=10, npoints=10, points=None):
+    def __init__(self,
+                 inputarray=None,
+                 xlo=0, xhi=10,
+                 npoints=10,
+                 points=None):
         if isinstance(points, list) or isinstance(points, np.ndarray):
             self.npoints = len(points) - 1
             self.points = np.asarray(points)
-            self.tpoints = np.linspace(self.points[0], self.points[-1], int(self.npoints / 2))
+            self.tpoints = np.linspace(self.points[0],
+                                       self.points[-1],
+                                       int(self.npoints / 2))
             self.x = np.zeros((self.npoints, int(self.npoints / 2)))
         else:
             self.npoints = npoints
