@@ -17,7 +17,7 @@ dim = 40
 f = fold(method='invert')
 f.set_response(dim, -10, 10)
 
-for i in xrange(10000):
+for i in range(10000):
     xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
     if x is not None:

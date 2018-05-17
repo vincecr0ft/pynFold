@@ -19,7 +19,7 @@ def test_invert():
     f = fold(method='invert')
     f.set_response(dim, -10, 10)
 
-    for i in xrange(10000):
+    for i in range(100000):
         xt = np.random.normal(0.3, 2.5)
         x = smear(xt)
         if x is not None:
@@ -53,7 +53,7 @@ def test_tikonov():
     f = fold(method='regularised')
     f.set_response(dim, -10, 10)
 
-    for i in xrange(100000):
+    for i in range(100000):
         xt = np.random.normal(0.3, 2.5)
         x = smear(xt)
         if x is not None:
@@ -89,7 +89,7 @@ def test_iterative():
     f = fold(method='iterative')
     f.set_response(dim, -10, 10)
 
-    for i in xrange(10000):
+    for i in range(100000):
         xt = np.random.normal(0.3, 2.5)
         x = smear(xt)
         if x is not None:

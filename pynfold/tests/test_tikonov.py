@@ -17,7 +17,7 @@ dim = 40
 f = fold(method='regularised')
 f.set_response(dim, -10, 10)
 
-for i in xrange(100000):
+for i in range(100000):
     xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
     if x is not None:
