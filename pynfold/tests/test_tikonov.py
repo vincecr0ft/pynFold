@@ -26,10 +26,7 @@ for i in range(100000):
         f.miss(xt)
 
 f.data = f.measured.x
-print 'data', f.data
-
 fig, ax = plt.subplots()
-# fig.facecolor = 'white'
 ax.plot(range(dim), f.data, label='data')
 
 for i in np.linspace(0., 1.5, 5):

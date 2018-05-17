@@ -16,7 +16,7 @@ def smear(xt):
 f = fold()
 f.set_response(4, -10, 10)
 
-for i in xrange(1000):
+for i in range(1000):
     xt = np.random.normal(0.3, 2.5)
     x = smear(xt)
     if x is not None:

@@ -33,9 +33,7 @@ fig, ax = plt.subplots()
 ax.plot(range(dim), f.data, label='data')
 
 f.run()
-print 'the hist is', f.invert.reco_hist()
 h = f.invert.reco_hist()
-print 'truth', f.truth.x
 
 ax.plot(np.linspace(0, dim, dim / 2), h, marker='o', label='inverted')
 ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
