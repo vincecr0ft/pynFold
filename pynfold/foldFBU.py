@@ -158,7 +158,7 @@ class fbu(object):
             mcmc.sample(self.nMCMC, burn=self.nBurn, thin=self.nThin)
 
         self.trace = [mcmc.trace('truth%d' % bin)[:]
-                      for bin in xrange(truthdim)]
+                      for bin in range(truthdim)]
         self.nuisancestrace = {}
         for name, err in zip(backgroundkeys, backgroundnormsysts):
             if err < 0.:

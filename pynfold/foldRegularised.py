@@ -10,9 +10,9 @@ class regularised:
         try:
             self.measured = f1x(inputarray=measured)
         except Exception as e:
-            print (e)
-            print (type(measured))
-            print ("could not convert that measured histogram")
+            print(e)
+            print(type(measured))
+            print("could not convert that measured histogram")
             pass
         self.unfolded = False
 

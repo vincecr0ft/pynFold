@@ -20,8 +20,8 @@ class Regularization(object):
         if self.regname in potentialdict:
             self.function = potentialdict[self.regname]
         else:
-            print ('WARNING: potential name not found!')
-            print ('Falling back to no potential...')
+            print('WARNING: potential name not found!')
+            print('Falling back to no potential...')
 
     def wrapper(self, truth=None, parameters={}):
         default_args = dict(value=truth)

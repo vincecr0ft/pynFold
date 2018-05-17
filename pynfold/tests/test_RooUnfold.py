@@ -15,7 +15,7 @@ def smear(xt):
 
 def test_invert():
     dim = 40
-    print ("Running Matrix Inversion: response in {} bins".format(dim))
+    print("Running Matrix Inversion: response in {} bins".format(dim))
     f = fold(method='invert')
     f.set_response(dim, -10, 10)
 

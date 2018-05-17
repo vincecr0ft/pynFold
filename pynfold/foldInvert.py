@@ -10,8 +10,8 @@ class invert:
             self.measured = f1x(inputarray=measured)
         except Exception as e:
             print(e)
-            print (type(measured))
-            print ("could not convert that measured histogram")
+            print(type(measured))
+            print("could not convert that measured histogram")
             pass
         self.unfolded = False
 
@@ -22,8 +22,8 @@ class invert:
             self.reco = (inverse * meas.T).T
         except Exception as e:
             print(e)
-            print ('matrix not invertable')
-            print ('using least squares')
+            print('matrix not invertable')
+            print('using least squares')
             self.reco = lsqr(self.response, meas)[0]
         self.unfolded = True
 

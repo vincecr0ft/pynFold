@@ -15,8 +15,8 @@ def wrapper(priorname='', low=[], up=[], other_args={}, optimized=False):
     elif hasattr(pymc, priorname):
         priormethod = getattr(pymc, priorname)
     else:
-        print ('WARNING: prior name not found!')
-        print ('Falling back to DiscreteUniform...')
+        print('WARNING: prior name not found!')
+        print('Falling back to DiscreteUniform...')
         priormethod = pymc.DiscreteUniform
 
     truthprior = []

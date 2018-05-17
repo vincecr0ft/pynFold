@@ -9,7 +9,7 @@ class iterative:
             self.measured = f1x(measured)
         except Exception as e:
             print(e)
-            print ("could not convert that measured histogram")
+            print("could not convert that measured histogram")
             pass
         self.iterations = iterations
         self.unfolded = False
