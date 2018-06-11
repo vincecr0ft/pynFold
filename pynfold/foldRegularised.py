@@ -18,7 +18,10 @@ class regularised:
 
     def __call__(self):
         meas = np.asarray(self.measured.x)
-        self.reco = lsqr(self.response, meas, damp=self.tau)[0]
+        nominal_sum = lsqr(self.response, meas)[0].sum()
+        solution = lsqr(self.response, meas, damp=self.tau, calc_var=True)
+        self.reco = solution[0]*nominal_sum/solution[0].sum()
+        self.var = solution[-1]
         self.unfolded = True
 
     def reco_hist(self):

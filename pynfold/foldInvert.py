@@ -20,11 +20,15 @@ class invert:
         try:
             inverse = np.linalg.inv(self.response)
             self.reco = (inverse * meas.T).T
+            self.cov = ABAT(inverse, measured.cov)
+            self.var = np.diag(self.cov)
         except Exception as e:
             print(e)
             print('matrix not invertable')
             print('using least squares')
-            self.reco = lsqr(self.response, meas)[0]
+            solution = lsqr(self.response, meas, calc_var=True)
+            self.reco = solution[0]
+            self.var = solution[-1]
         self.unfolded = True
 
     def reco_hist(self):
@@ -33,3 +37,6 @@ class invert:
         else:
             self.__call__()
             return self.reco
+
+    def ABAT(self, A, B):
+        return np.multiply( A, np.multiply( B, A.T))

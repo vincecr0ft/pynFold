@@ -14,7 +14,7 @@ def smear(xt):
 
 
 def test_invert():
-    dim = 40
+    dim = 30
     print("Running Matrix Inversion: response in {} bins".format(dim))
     f = fold(method='invert')
     f.set_response(dim, -10, 10)
@@ -27,7 +27,8 @@ def test_invert():
         else:
             f.miss(xt)
 
-    f.data = f.measured.x
+    datapoints = [smear(x) for x in np.random.normal(0.3, 2.5, 300)]
+    f.data = np.histogram([d for d in datapoints if d is not None], bins=f.measured.points)[0]
     fig, ax = plt.subplots()
     ax.plot(range(dim), f.data, label='data')
 
@@ -49,7 +50,7 @@ def test_invert():
 
 
 def test_tikonov():
-    dim = 40
+    dim = 30
     f = fold(method='regularised')
     f.set_response(dim, -10, 10)
 
@@ -60,8 +61,9 @@ def test_tikonov():
             f.fill(x, xt)
         else:
             f.miss(xt)
+    datapoints = [smear(x) for x in np.random.normal(0.3, 2.5, 500)]
+    f.data = np.histogram([d for d in datapoints if d is not None], bins=f.measured.points)[0]
 
-    f.data = f.measured.x
     fig, ax = plt.subplots()
     ax.plot(range(dim), f.data, label='data')
 
