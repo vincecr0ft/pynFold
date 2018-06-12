@@ -83,7 +83,7 @@ def test_tikonov():
         h = f.regularised.reco_hist()
         h_err = f.regularised.var
         ax.errorbar(np.linspace(0, dim, dim / 2),
-                h, h_err, marker='o', label=r'$\tau$ at {}'.format(i))
+                    h, h_err, marker='o', label=r'$\tau$ at {}'.format(i))
     ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
 
     left, bottom, width, height = [0.08, 0.53, 0.35, 0.35]
