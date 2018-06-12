@@ -38,8 +38,12 @@ def test_invert():
     h = f.invert.reco_hist()
     h_err = f.invert.var
 
-    ax.errorbar(np.linspace(0, dim, dim / 2), h, h_err, marker='o', label='inverted')
-    ax.plot(np.linspace(0, dim, dim / 2), f.truth.x*h.sum()/f.truth.x.sum(), label='truth')
+    ax.errorbar(
+        np.linspace(0, dim, dim / 2), h, h_err,
+        marker='o', label='inverted')
+    ax.plot(np.linspace(0, dim, dim / 2),
+            f.truth.x * h.sum() / f.truth.x.sum(),
+            label='truth')
 
     left, bottom, width, height = [0.08, 0.53, 0.35, 0.35]
     ax2 = fig.add_axes([left, bottom, width, height])
