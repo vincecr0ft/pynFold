@@ -20,7 +20,7 @@ class invert:
         try:
             inverse = np.linalg.inv(self.response)
             self.reco = (inverse * meas.T).T
-            self.cov = ABAT(inverse, measured.cov)
+            self.cov = self.ABAT(inverse, self.measured.cov)
             self.var = np.diag(self.cov)
         except Exception as e:
             print(e)
@@ -39,4 +39,4 @@ class invert:
             return self.reco
 
     def ABAT(self, A, B):
-        return np.multiply( A, np.multiply( B, A.T))
+        return np.multiply(A, np.multiply(B, A.T))

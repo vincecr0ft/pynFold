@@ -27,16 +27,19 @@ def test_invert():
         else:
             f.miss(xt)
 
-    datapoints = [smear(x) for x in np.random.normal(0.3, 2.5, 300)]
-    f.data = np.histogram([d for d in datapoints if d is not None], bins=f.measured.points)[0]
+    datapoints = [smear(event) for event in np.random.normal(0.3, 2.5, 300)]
+    f.data = np.histogram(
+        [d for d in datapoints if d is not None],
+        bins=f.measured.points)[0]
     fig, ax = plt.subplots()
     ax.plot(range(dim), f.data, label='data')
 
     f.run()
     h = f.invert.reco_hist()
+    h_err = f.invert.var
 
-    ax.plot(np.linspace(0, dim, dim / 2), h, marker='o', label='inverted')
-    ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
+    ax.errorbar(np.linspace(0, dim, dim / 2), h, h_err, marker='o', label='inverted')
+    ax.plot(np.linspace(0, dim, dim / 2), f.truth.x*h.sum()/f.truth.x.sum(), label='truth')
 
     left, bottom, width, height = [0.08, 0.53, 0.35, 0.35]
     ax2 = fig.add_axes([left, bottom, width, height])
@@ -61,8 +64,11 @@ def test_tikonov():
             f.fill(x, xt)
         else:
             f.miss(xt)
-    datapoints = [smear(x) for x in np.random.normal(0.3, 2.5, 500)]
-    f.data = np.histogram([d for d in datapoints if d is not None], bins=f.measured.points)[0]
+
+    datapoints = [smear(event) for event in np.random.normal(0.3, 2.5, 500)]
+    f.data = np.histogram(
+        [d for d in datapoints if d is not None],
+        bins=f.measured.points)[0]
 
     fig, ax = plt.subplots()
     ax.plot(range(dim), f.data, label='data')
@@ -71,8 +77,9 @@ def test_tikonov():
         f.tau = i
         f.run()
         h = f.regularised.reco_hist()
-        ax.plot(np.linspace(0, dim, dim / 2),
-                h, marker='o', label=r'$\tau$ at {}'.format(i))
+        h_err = f.regularised.var
+        ax.errorbar(np.linspace(0, dim, dim / 2),
+                h, h_err, marker='o', label=r'$\tau$ at {}'.format(i))
     ax.plot(np.linspace(0, dim, dim / 2), f.truth.x, label='truth')
 
     left, bottom, width, height = [0.08, 0.53, 0.35, 0.35]

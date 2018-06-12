@@ -20,7 +20,7 @@ class regularised:
         meas = np.asarray(self.measured.x)
         nominal_sum = lsqr(self.response, meas)[0].sum()
         solution = lsqr(self.response, meas, damp=self.tau, calc_var=True)
-        self.reco = solution[0]*nominal_sum/solution[0].sum()
+        self.reco = solution[0] * nominal_sum / solution[0].sum()
         self.var = solution[-1]
         self.unfolded = True
 

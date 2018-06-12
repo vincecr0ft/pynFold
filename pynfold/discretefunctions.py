@@ -34,7 +34,6 @@ class f1x:
             self.loadROOT(inputarray)
 
         self.nevents = self.x.sum()
-        
         self.cov = self.get_cov()
 
     def loadNP(self, inputarray):
@@ -98,10 +97,11 @@ class f1x:
             for i in range(1, npoints + 1):
                 contents.append(float(newfunc.GetBinContent(i)))
                 self.x += np.asarray(contents, dtype=float)
-                
+
     def get_cov(self):
-        return np.identity(self.x.size)*self.x
-        
+        return np.identity(self.x.size) * self.x
+
+
 class Axy:
     def __init__(self,
                  inputarray=None,
