@@ -26,13 +26,13 @@ All parameters are optional but cannot return unless sufficient information is s
     * *data_bins* - shape of data vector. ``y_shape`` is matched to this shape.
 
 - **Methods**:
-  - **Fill(x, y), Miss(x)** - set response manually for individual events (float) *x* and *y*. 
+  - **Fill(x, y), Miss(x)** - set response manually for individual events (float) *x* and *y*. (RooUnfold Legacy mode)
   - **response_matrix()** 
     - **returns A** - a matrix of probabilities of dim(m, n) = dim(y), dim(x)
   - **Unfold()** - Performs deconvolution of data given the response according to specified algorithm.
-  - **h_reco**
+  - **h_reco()**
     * **Returns g** - a histogram of shape ``x_shape`` estimated from the ``Unfold()`` step
-  - **b_reco**
+  - **b_reco()**
     * **Returns g** - a b-spline of with knots as ``x_shape`` estimated from the ``Unfold()`` step.
 
 ## Notes
@@ -92,7 +92,7 @@ though the 'true' distribution isn't used in the Unfolding calculation, the opti
 ```
 true_hist, x_bins = np.histogram(x, 5)
 f.set_x_shape(shape=x_bins)
-``
+```
 our response is obtained as:
 ```
 print f.response_matrix()
