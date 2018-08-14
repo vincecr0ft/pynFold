@@ -10,6 +10,7 @@ class response:
                  function = None):
 
         self.response_matrix = matrix
+        self.bin_efficiency = None
 
         if inputarray is not None:
             if isinstance(inputarray, np.ndarray):
@@ -71,3 +72,19 @@ class response:
                                          out=np.zeros_like(response_hist),
                                          where=p_x!=0).T
         return self.response_matrix
+
+
+    def create_binned_efficiencies(self, bins_x, bins_y):
+        if self.bin_efficiency is not None:
+            logging.error("Binned efficiency already defined")
+        xy = np.asarray(self.response, dtype=float)
+        hits = xy[:,~np.any(np.isnan(xy), axis=0)] #Removing Nones (efficiency loss)
+        response_hist,_,_ = np.histogram2d( hits[0,:], hits[1,:], bins = (bins_x, bins_y))
+        p_x,_ = np.histogram(xy[0,:], bins_x) # prob to find x anywhere in range
+        print 'response hist', response_hist.T
+        print 'truth', p_x
+        self.bin_efficiency = divide_zeros(response_hist.T.sum(axis=0), p_x)
+        return self.bin_efficiency
+
+def divide_zeros(A, B):
+    return np.divide(A, B, out=np.zeros_like(A), where=B != 0)
