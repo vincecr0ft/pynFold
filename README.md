@@ -1,5 +1,5 @@
 # PynFold
-``pynfold`` ``fold``
+``pynfold``*.*``fold``
 
 An interface for pythonic solutions to the inverse problem also known as unfolding. 
 

@@ -26,4 +26,13 @@ class inversion:
             x = lsqr(self.A.T, self.f, calc_var = True)
             mus = x[0]
             var = x[-1]
-        return (mus, var)
+        self.reco = mus
+        self.var = var
+        return mus, var
+
+    def reco_hist(self):
+        if self.unfolded:
+            return self.reco
+        else:
+            self.__call__()
+            return self.reco

@@ -81,8 +81,6 @@ class response:
         hits = xy[:,~np.any(np.isnan(xy), axis=0)] #Removing Nones (efficiency loss)
         response_hist,_,_ = np.histogram2d( hits[0,:], hits[1,:], bins = (bins_x, bins_y))
         p_x,_ = np.histogram(xy[0,:], bins_x) # prob to find x anywhere in range
-        print 'response hist', response_hist.T
-        print 'truth', p_x
         self.bin_efficiency = divide_zeros(response_hist.T.sum(axis=0), p_x)
         return self.bin_efficiency
 

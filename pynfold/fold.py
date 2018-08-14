@@ -4,7 +4,7 @@ import traceback
 
 from response import response
 from fold_naive import inversion
-from fold_dimensionality import richardson_lucy
+from fold_dimensionality import richardson_lucy, TSVD
 from fold_composite import tikonov
 import numpy as np
 
@@ -23,11 +23,11 @@ class fold:
         self.data = data
         self.data_hist = data_hist
         self.y_bins = data_bins
-
+        self.method_type = None
         if type is None:
             logging.info(u'No unfolding method specified. Assume na\xfeve - matrix invert')
             self.type = 'naive'
-        elif  not isinstance(type, str) or not type.lower() in ['naive', 'dimensionality', 'composite']:
+        elif  not isinstance(type, str) or not type.split(' ')[0].lower() in ['naive', 'dimensionality', 'composite']:
             message = ('Unfolding method not understood.\n'
                        '\nCurrent options are:\n'
                        u'    Na\xefve (naive) - Matrix Inversion, Correction Factors\n'
@@ -38,7 +38,10 @@ class fold:
             self.type = 'naive'
         else:
             logging.info('setting type:{}'.format(type))
-            self.type = type
+            self.type = type.split(' ')[0].strip(' ')
+            if len(type.split(' ')) > 1:
+                self.method_type = type.split(' ')[1].lower().strip()
+                logging.info('A sub-type has been specified as: {}'.format(self.method_type))
 
         if response is not None:
             try:
@@ -154,11 +157,11 @@ class fold:
 
     def Unfold(self, *args):
 
-        if self.type is 'naive':
+        if 'nai' in self.type:
             self.method = inversion(self.response_matrix(), self.data_hist)
             return self.method()
 
-        elif self.type is 'composite':
+        elif 'com' in self.type:
             if len(args) is 1:
                 damping = args[0]
             else:
@@ -166,10 +169,28 @@ class fold:
             self.method = tikonov(self.response_matrix(), self.data_hist, damping)
             return self.method()
 
-        elif self.type is 'dimensionality':
-            if len(args) is 1:
-                iterations = args[0]
+        elif 'dim' in self.type:
+            logging.info('using dimensionality control method')
+            if self.method_type is not None and self.method_type == 'tsvd':
+                print 'TSVD with args', args
+                if len(args) is 1:
+                    truncations = args[0]
+                else:
+                    truncations = 1
+                self.method = TSVD(self.response_matrix(), self.data_hist, truncations)
+                return self.method()
+            elif self.method_type is None or self.method_type == 'rl':
+                if len(args) is 1:
+                    iterations = args[0]
+                else:
+                    iterations = 4
+                self.method = richardson_lucy(self.response_matrix(), self.data_hist, self.bin_efficiency(), iterations)
+                return self.method()
             else:
-                iterations = 4
-            self.method = richardson_lucy(self.response_matrix(), self.data_hist, self.bin_efficiency(), iterations)
-            return self.method()
+                logging.error('method not understood')
+                logging.error('currently supported methods are:\n'
+                              '    rl : richardson-lucy, aka d\'agostini, iterative or bayesian \n'
+                              '    tsvd: truncated singular value decomposition')
+                logging.error('the current method is {}'.format(self.method_type))
+        else:
+            logging.error('method {} not understood'.format(self.type))
