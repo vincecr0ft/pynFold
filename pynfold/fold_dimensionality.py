@@ -17,7 +17,7 @@ class richardson_lucy:
                          for i in range(self.x_shape)], dtype=float)
         var = np.zeros(len(mu))
         for i in range(self.iterations):
-            mu, var = self.evaluate_mus(mu)
+            mu, var = self.evaluate_mus(mu, var)
         self.reco = mu
         self.var = var
         self.unfolded = True
@@ -30,16 +30,17 @@ class richardson_lucy:
             self.__call__()
             return self.reco
 
-    def evaluate_mus(self, mu):
+    def evaluate_mus(self, mu, var):
         p = mu / mu.sum()
-        return (divide_zeros(
+        new_mus = divide_zeros(
             (divide_zeros(
                 (self.A * p),
                 (self.A * p).sum(axis=1)[:, None]
             ) * self.data[:, None]).sum(axis=0),
-            self.epsilons),
-            variance_of_matrix(divide_zeros((self.A*p),
-                             (self.A*p).sum(axis=1)[:, None])))
+            self.epsilons)
+        var_here = np.square(variance_of_matrix(divide_zeros(self.A*p ,(self.A*p).sum(axis=1)[:,None]))) + np.square(var)
+        return (new_mus, np.sqrt(var_here))
+            
         
 def divide_zeros(A, B):
     return np.divide(A, B, out=np.zeros_like(A), where=B != 0)

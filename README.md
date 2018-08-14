@@ -37,14 +37,14 @@ All parameters are optional but cannot return unless sufficient information is s
 
 ## Notes
 
-### Unfolding Folk Lore
+### Unfolding Folklore
 Prof. Dr. Volker Blobel compiled a list of rules of thumb to be used when approaching the inverse problem in high energy physics. 
 
 1. Use at least 100 times more events in your response (MC) than you have data if possible.
 2. To avoid an underconstrained system you should use at least twice as many data points(bins) as you have estimators (truth bins).
 3. The response, though independent from the data, should be derived over a distribution as close to the target distribution as possible. (The uniform distribution used when a `response_function` is set to the fold is rarely optimal.)
 
-Work in progress. 
+## Work in progress. 
 
 ### Currently (partly) Available
 

@@ -5,6 +5,7 @@ import traceback
 from response import response
 from fold_naive import inversion
 from fold_dimensionality import richardson_lucy
+from fold_composite import tikonov
 import numpy as np
 
 class fold:
@@ -34,7 +35,7 @@ class fold:
                        '    Composite - Tikonov/damped LSQ, Fully Bayesian, RUN\n')
             logging.warning(message)
             logging.info(u'No unfolding method specified. Assume na\xefeve - matrix invert')
-            self.type = 'naieve'
+            self.type = 'naive'
         else:
             logging.info('setting type:{}'.format(type))
             self.type = type
@@ -152,9 +153,19 @@ class fold:
             return self.response.create_binned_efficiencies(self.x_shape, self.y_shape)
 
     def Unfold(self, *args):
+
         if self.type is 'naive':
             self.method = inversion(self.response_matrix(), self.data_hist)
             return self.method()
+
+        elif self.type is 'composite':
+            if len(args) is 1:
+                damping = args[0]
+            else:
+                damping = 0.5
+            self.method = tikonov(self.response_matrix(), self.data_hist, damping)
+            return self.method()
+
         elif self.type is 'dimensionality':
             if len(args) is 1:
                 iterations = args[0]
