@@ -18,11 +18,25 @@ class fold:
                  data = None,
                  data_hist = None,
                  data_bins = None):
-        self.x_shape = x_shape
-        self.y_shape = y_shape
+
+        if x_shape is not None:
+            if isinstance(x_shape, tuple) and len(x_shape)==3:
+                self.set_x_shape(xlow=x_shape[0],xhi=x_shape[1],n_points=x_shape[2])
+            elif isinstance(x_shape, list) or isinstance(x_shape, np.ndarray):
+                self.set_x_shape(shape=x_shape)
+            else:
+                logging.error('x_shape should be either tuple (xlo, xhi, n_npoints)\n'
+                              'or a list or array of segments')
+        if y_shape is not None:
+            self.y_shape = self.set_y_shape(shape=y_shape)
+        else:
+            self.y_shape = None
         self.data = data
-        self.data_hist = data_hist
-        self.y_bins = data_bins
+        if data_hist is not None and data_bins is not None:
+            self.set_data_hist(data_hist, data_bins)
+        else:
+            self.data_hist = None
+
         self.method_type = None
         if type is None:
             logging.info(u'No unfolding method specified. Assume na\xfeve - matrix invert')
@@ -50,7 +64,9 @@ class fold:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
                 logging.error(''.join(line for line in lines))
-        self.response = None
+        else:
+            self.response = None
+
 
     def set_response(self, inputarray):
         logging.info('setting response as an array of type:{}'.format(type(inputarray)))
@@ -85,7 +101,7 @@ class fold:
             if (isinstance(kwargs['shape'], list) or isinstance(kwargs['shape'], np.ndarray)):
                 self.x_shape = np.asarray(kwargs['shape'])
             else:
-                logging.error('shape is a list or array of the bins or knots'
+                logging.error('shape is a list or array of the bins or knots '
                               'in the desired distribution')
     def set_y_shape(self, **kwargs):
         if 'y_high' in kwargs:
@@ -94,7 +110,7 @@ class fold:
             if (isinstance(kwargs['shape'], list) or isinstance(kwargs['shape'], np.ndarray)):
                 self.y_shape = np.asarray(kwargs['shape'])
             else:
-                logging.error('shape is a list or array of the bins or knots'
+                logging.error('shape is a list or array of the bins or knots '
                               'in the desired distribution')
 
     def set_data_hist(self, hist, *args):
@@ -131,7 +147,10 @@ class fold:
             else:
                 logging.info('resetting y shape to match the data hist')
             self.set_y_shape(shape=args[0])
-        else: print 'type',type(args)
+        else: 
+            logging.error('data hist is missing some keywords\n'
+                          'shape=[],np.ndarray()\n'
+                          'xlo=-10, xhi=10, n_points=11')
             
     def response_matrix(self):
         if self.x_shape is None or self.y_shape is None:
@@ -172,7 +191,6 @@ class fold:
         elif 'dim' in self.type:
             logging.info('using dimensionality control method')
             if self.method_type is not None and self.method_type == 'tsvd':
-                print 'TSVD with args', args
                 if len(args) is 1:
                     truncations = args[0]
                 else:

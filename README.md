@@ -11,7 +11,7 @@ All parameters are optional but cannot return unless sufficient information is s
 - **Parameters**:
   - **type**: 
     * *Naive (naive)* - Matrix Inversion, Correction Factors
-    * *Dimensionality* - Truncated SVD, Richardson-Lucy/D'Agostini
+    * *Dimensionality* - Truncated SVD, Richardson-Lucy/D'Agostini/Iterative/'Bayesian'
     * *Composite* - Tikonov/damped LSQ, Fully Bayesian, RUN
   - **response**
     * a two dimensional mapping true:measured in lists of numpy arrays
@@ -48,14 +48,13 @@ Prof. Dr. Volker Blobel compiled a list of rules of thumb to be used when approa
 
 ### Currently (partly) Available
 
-- ``Naive - Matrix Inversion`` and ``Composite - damped LSQ`` are currently available through ``scipy.sparse.linalg.lsmr``
+- ``Naive - Matrix Inversion``, ``Composite - damped LSQ`` , ``Dimensionality - Richardson-Lucy`` and ``Dimensionality - Truncated SVD`` all available using RooUnfold type settings. 
 - ``HistogramPdf`` for Nystrom discretisation implemented but lacking functor+minimiser to fit a pseudo inverse.
 - ``response_matrix`` is currently the only available kernel. Weighted polynomials (as used in RUN) and kde under preparation. 
 - Fully Bayesian Unfolding was available under ``version 1.6`` but has been temporarilly removed to avoid dependency issues. 
 
 ### up-coming
 
-- ``TSVD`` and ``D'Agostini`` - methods are implemented but lacking accurate variance/covariance calculations.
 - ``Fit mode`` - construct the likelihood for the estimators and retrieve full minos intervals.
 - ``spline-mode`` - discretise data and reconstructed functions using b-splies as basis functions in Galerkin expansion. 
 - ``Regularisation Optimisation`` - Control/Visualise the effect of varying regularisation strengths.
@@ -112,4 +111,18 @@ A = f.response_matrix()
 f = np.asarray(true_hist)
 print 'let us try it!'
 print  f*A
+```
+
+And now in inverse/unfolded mode
+```
+reco, var = f.Unfold()
+```
+in this case the reco vector is the nystrom discretisation of weights for the 'true' function f(x) or the reconstructed histogram. 
+such that `f` should equal `reco` if the number of events are the same (e.g. 100 times less events means scaling f by 0.01)
+
+**Specifying regularisation strength** for some algorithms the regularisation strength needs to be supplied e.g. RL - *n* iterations, tikonov - lagrange mulitplier etc)
+this is done dynamically.
+```
+f = fold('composite', response= np.array([x,data]), x_shape= x_bins, data_hist= data_hist, data_bins= bins)
+reco, var = f.Unfold(.25)
 ```
