@@ -3,157 +3,155 @@
    :target: https://github.com/vincecr0ft/pynFold
    :align: center
 
-PynFold
-=======
+PynFold - Unfolding With Python
+===============================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-# pynFold - Unfolding with python
-
 .. image:: https://travis-ci.org/vincecr0ft/pynFold.svg?branch=master
    :target: https://travis-ci.org/vincecr0ft/pynFold
 
-pynFold (pronounced *pen*-fold) is solution of the inverse problem, also known as deconvolution and unfolding. The core functionality is a pythonic implementation of several of the algorithms featured in [RooUnfold](http://hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html) ROOT Unfolding Framework aiming to compare unfolding methods with those provided outisde of high energy physics and to increase robustness by eliminating dependencies on the ROOT libraries basing algorithms only on numpy and minimal additional libraries. An extention to the base algorithm featured here is an implementation of the fully basian unfolding method based on work by Clement Helsens, Davide Gerbaudo, and Francesco Rubbo [fbu](https://github.com/gerbaudo/fbu)
+The Inverse Problem
+-------------------
 
-What is Unfolding?
-==================
-
-Unfolding relates to the problem of estimating probability distributions in cases where no parametric form is available, and where the data are subject to additional random fluctuations due to limited resolution. The same mathematics can be found under the general heading of inverse problems, and is also called deconvolution or unsmearing. This type of problem is best visualised in the equation form known as the [Fredholm integral](https://en.wikipedia.org/wiki/Fredholm_integral_equation) of the first kind. 
+The process of unfolding is part of a class of problems that arise when our goal is to recover 'interior' or 'hidden' information from the 'outside'. It is used in medical imaging to reconstruct 3D images of the inner workings of body parts through CT scans, and electro-cardiography and similarly in geophysical prospecting and tommography. It is also present in most photo-editing software to 'de-blur' images as in High energy physics where we wish to 'correct' a distribution to account for the limited response of our measurement instruments. All of these problems can be formulated in terms of the Fredholm integral.
 
 .. image:: ../Fredholm.svg
+ 
+where *g(y)* and *K(y|x)* are known or are estimated prior to solving the problem in the inverse sense. In the forward case, when *f* and *K* are known we can compute *g* by evaluating the integral.
 
-when *g(y)* and *K(y|x)* are known. The Kernel *K*, acts as a smoothing matrix in the forward detector and we can interpret its elements as a matrix of probabilites, strictly positive between 0 and one. Inverting the matrix (if possible) resutls in strictly non-probabilistic terms that instead of smothing add large high frequency components due to arbitrarily small fluctuations. The goal of unfolding is to impose some knowledge about the smoothness of this matrix onto the inversion to suppress such high frequency elements. This process is called regularisation. 
+**Example: Calorimeter response**
+Any detection of signals will have some limited resolution on account of the imperfect nature of measurement. In high energy physics a true distribution can be modelled using the technique of Monte Carlo (MC) simulation. This true distribution however will not be measured perfectly by the detector. A typical calorimeter (used to measure a particles energy) will have a response that is *smeared* by a function that has a gaussian distribution and a standard deviation that resembles:
 
-Discretisation
-==============
-Histograms
-----------
-The standard representation of the functions *g(y)* and *f(x)* in high energy physics is that of Histograms. In this case the function is evaluated at set points with each of these points being represented as a weight. 
+.. image:: ../smearing.svg
 
-B-splines
-----------
-Another approach see us representing a distribution *x* using a collection of basis functions:
+In this way there will be *less* information contained in the measured distribution than originally described since the information has been smeared away. This can be seen visually with a distribution of two gaussians that are smeared to become one. 
 
-.. image:: ../BasisFunctions.svg
+.. image:: ../TrueTwinPeak.png
+	:width: 45%
+.. image:: ../SmearedTwinPeak.png
+	:width: 45%
 
-where *h_m* are basis functions which are prespecified the model. Since this model is linear in the new variables standard least squares / MLE methods are possible. B-splines are piecewise polynomials that are joined together to make a single smooth curve. These piecewise *m − 1* degree polynomials are required to be continuous up to the first *m − 2* derivatives
+Here it is trivial to see that if the only information we know is the response function and the measured distribution the true distribution is subject to certain information that we simply cannot reconstruct. It has been smeared away. 
 
-Regularisation Types
-====================
-Naïeve Solutions
-----------------
-**Inversion** - The Maximum-Likelihood and least squares solutions for inverted kernels are the baseline for most solutions posed here. 
+The true nature of the problem is one step worse. Due to the nature of the Fredholm integral, abritarily small perturbations in the measured distribution *g(y)* can be estimated to have abritrarily large perturbations in the reconstructed/corrected/unfolded distribution. This property of inverse problems is formulated mathematically by the *Riemann-Lebesgue lemma*. The lemma states that the fourier transform of a function with a finite integral (such as in the Fredholm integral) vanishes at infinity. i.e. as the frequency of *f* increases then the amplitude of *g* decreases. In the inverse however, this means that small amplitudes (such as noise) can produce arbitarility large frequency components in the unfolded distribution. In the above example of two peaks being smeared into one, the presence of noise (e.g. too fine a binning in the histogram) in the distribution can produce arbitrary additional peaks in the unfolded response.
 
-In the histogram representation:
+**Deconvolution**
+A special case for the inverse problem is *deconvolution* this is when the kernel is a function of the difference between *x* and *y*
 
-.. image:: ../Direct.svg
+.. image:: ../deconvolution.svg
 
-the vector *x* can be found by minimizing the Euclidean 2-norm:
 
-.. image:: ../LeastSquares.svg
+Unfolding - the case for histograms
+-----------------------------------
+It is common in high energy physics to represent distributions as histograms as the fininite binning represents the resolution of the detector and the practical discretisation of a continuous distribution as measured by a 'real world' apparatus. This method of approximating $f$ on at selected abscissas for discrete solutions to the fredhom integral is similar to the quadrature method also known as Nyström approximation with some differences in the normalisation. 
 
-**Corection Factors** - In high energy physics, the kernel is typically obtained from the montecarlo simulation of a *true* distribution and a simulated *measured* response. This method reweights the data by the difference in *true* and *measured distributions*. The uncertainty in this case is taken as the propagated poisson uncertainty of each value.
+This is expressed mathematically as:
 
-#### Dimensionality Control
-**TSVD** - Perhaps the simplest example of regularisation in this issue is that of the truncated singular value decomposition, **TSVD**. If the Kernel is invertable, an SVD expansion produces a list of coefficients that decay to 0. The speed of this decay can be interpreted as the *smoothness* of the kernel and indeed in the Riemann-Labesgue model most of the high frequency components that cause instabilites in the inversion are produced by the smaller SVD components. TSVD limits the number of components used in the unfolding. Less components typically leads to a smoother distribution however cutting too tightly may lead to Gibbs fluctuations. 
+.. image:: ../nystrom1.svg
 
-**D'Agostini - Iterative - Bayesian -Richardson-Lucy** - The most common unfolding algorithm used in science. Known as Bayesian unfolding in High Energy Physics (as adopted by d'Agostini) and as Richardson-Lucy in astonomy, variations on this method can also be described as Maximum Likelihood for Poisson distributed data, or expectation-maximation (EM) algorithm incomplete data. A flat distribution is assumed the prior probability and updated given the data. This process is then repeated. If the number of iterations is large then the solution will converge to the Maximum Likelihood estimate (zero bias but large variance). Stopping the number of iterations can limit the contribution of high frequency contributions and minimize the bias-variance trade off. Typically the process in HEP converges after 4 or less iterations. 
+where *En* is the quadrature error such that the Fredholm equation becomes:
 
-**Choice of Discretisation** - Merely representing distributions as Histograms or Splines, introduces a bias in favour of reduced variance. A change of basis might be used to control the bias variance tradeoff in estimators. However, unlike the number of D'Agostini iterations and number of truncated SVD components, this method provides no coherent way to control the regularisation strength.
+.. image:: ../nystrom2.svg
 
-Composite Hypotheses
---------------------
+and the error term is a function of *y* and dependent therefore on any systematics associated with the measurement.
 
-**Tikonov - Lagrange Multipliers - Ridge Regression** - The most common solution in mathematics and computer science is the application of a lagrange multiplier to control regularisation of a problem. The minimization now becomes
+We can apply a similar rationale to the kernel *K* to produce a *Response-Matrix* whose elements are the conditional probability *P(g|f)* for an event that was produced in the 'truth-level' bin *f* to be reconstructed in the reco-level bin *g*.
+
+.. image:: ../responsematrix.svg
+
+this now allows us to formulate the problem as a multivariate linear regression. With the truth bins *f* and measured bins *g* related by a matrix of probabilities. The estimators for $f$ can then be obtained through standard least squares minimisation. 
+
+.. image:: ../histinversion.svg
+
+Note that in general the histogram R is invertable if the same binning for true and measured distributions are used since then the matrix is square. This should however be avoided since then the solution is under constrained. The pseudo inverse must be used for non-square matrices and is useful for obtaining the variance of the estimators as:
+
+.. image:: ../variance.svg
+
+where *E²* is the underlying error term arrising from the measruement and the noise in the regression.  
+
+
+Regularisation Methods.
+=======================
+
+Naïve
+-----
+A simple Matrix inversion described above in the default case for estimates.
+Of course the response matrix *should* have more measured bins than true and therefore the pseudo-inverse from numpy [#pseudoinverse]_ is used. 
+
+If the response is not full rank it might not be possible to obtain the pseudoinverse like this, in which case an iterative solution for the full least squares solution is provided by the scipy lsqr [#leastsqr]_ function.
+
+.. [#pseudoinverse] numpy.linalg. pinv_
+
+
+.. [#leastsqr] scipy.sparse.linalg lsqr_
+
+
+.. _lsqr: https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.lsqr.html#scipy.sparse.linalg.lsqr
+
+
+.. _pinv: https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.pinv.html
+
+Composite
+---------
+Composite hypotheses act upon the least squares or likelihood based estimation for the unfolded specrum, either by adding a system of lagrange mulipliers to the minimisation function or controling the minimisation process itself.
+
+**damped**
+
+The damped least squares solution is also known as tikonov regularisation or L2 regularisation or ridge regression as found in the `RooUnfold` package as the `TUnfold`.
+
+The form of the minimization now takes the form:
 
 .. image:: ../DampedLSQR.svg
 
-Usage
-=====
 
-The base of any pynfold calculation is defining a fold. 
+This solution is obtained through the Paige and Saunders algorithm [#leastsqr] for spare linear equations and least squares. This algorithm also supports stopping conditions and is suitable for preconditioning of the matrix based on prior estimates which make it suitible for future studies. 
 
-.. code-block:: python
+Dimensionality Control
+----------------------
+In the formulation of the Unfolding problem, it can be seen that the problems arise in the way that non-dominant information is lost or added during the inversion of the kernel function. This can be solved via controling the dimensionality of the kernel itself to remove these problematic small amplitute components. 
 
-    from pynfold import fold
-    f = fold()
+**TSVD**
 
-The response matrix can either be defined directly as:
+Truncated Singular Value Decomposition is one of the most intuative regularisation methods. In the Singular Value Expansion (SVE) of dummy kernels it can be seen that the smaller coefficient of the contributions to the response function the more likely it is to produce some high frequency fluctuation to the reconstructed distribution. By truncating these values we are imposing a smoothness constraint on the inverted response. 
 
-.. code-block:: python
+The Singular Value Decomposition of a matrix can be understood as the axes of the least squares fitted elipse, together with it's orientation and a projection onto these axes. The square sum of these values should contain the entire valriance of the matrix. By truncating these singular values we can produce a series of estimators that contain some fraction of the variance and therefore assert some degree of smoothness on the system. 
 
-    f.response = [[0.08, 0.02], [0.02, 0.08]]
+Control over the degree of regularisation in this case is obtained by selecting the number of values to truncate. It stands to reason that if the distribution does not contain very many singular values truncating too many will result in a loss of information. 
 
-alternatively this can be defined in the *RooUnfold style*
+**Richardson-Lucy**
 
-.. code-block:: python
+The Richardson-Lucy algorithm, also known at iterative unfolding or Bayesian unfolding in high energy physics [#bayesian]_ this method is commonly used in photo-editing/restoration and in Astronomy [#astro]_. The Point Spread Function (PSF) mentioned in some literature with respect to the Richardson-Lucy algorithm is equivalent to the Response Matrix described previously. 
 
-    f.set_response(n_bins, x_min, x_max)
-    for i in range(100000):
-        xt = np.random.normal(-2.5, 0.2)  # some point drawn from a distribution
-        x = some_smearing(xt)
-        if x survives_smearing:
-            f.fill(x, xt)
-        else:
-	    f.miss(xt)
+The R-L algorithm iteratively updates a series of estimates for the unfolded distribution with the estimate provided by the . If the number of iterations is infinite then the Maximum Likelihood solution is obtained. The initial guess for tlshe unfolded distribution is given by a flat distribution normalised to the number of events. 
 
-by default the number of 'truth' bins is half the number of measured to avoid underconstrining the problem.
+.. [#bayesian] Originally derived using Bayesian arguments the R-L algorithm was introduced to High Energy Particle physics by D'Agostini with the label 'Bayesian Unfolding' and is implemented in RooUnfold as such. However the algorithm has since been interpreted in a purely mathematical way. Though Bayes theorem is used to write the conditional probability of events the estimators obtained at the end of each iteration are not a sumary of the posterior probability density function for the distribution. Since the estimators are not based on the prior probability of the estimators the method is not strictly a bayesian method.
 
-before unfolding we set the `data` distribution that we wish to unfold using this response matrix
-
-.. code-block:: python
-
-    f.data = [100,150]
+.. [#astro] though the R-L algorithm is very common in some fields such as astronomy, responses to the algorithms performance can vary hugely. In high energy phyiscs the R-L algorithm converges quickly and the uncertainties rarely explode even with a high number of iterations however anecdotal evidence from Astronomers using the method report that often the uncertainties become prohibative before the number of iterations converge to a suitable resolution. As both of these situations are sub-optimal, this behaviour should be studied in detail in order to ascertain situations where the R-L algorithm is most suitable. 
 
 
-the unfolding is then performed by running the fold
+Discretisation
+==============
 
-.. code-block:: python
+Galerkin Expansion with B-splines 
+---------------------------------
 
-    f.run()
+Kernel Methods
+--------------
+Kernel Density Estimation
 
+Gaussian Processes
 
-### different algorithms available
-**Simple matrix inversion**
+Regularisation Control
+======================
 
-    f.method = 'invert'
-    f.run()
-    hist = f.invert.reco_hist()
+L-Curve
+-------
 
-.. image:: ../invert.png
-
-if the matrix is non-invertable the simple least squares estimate is used.
-
-**Damped least squares - Tikonov regularisation**
-
-.. code-block:: python
-
-    f.method = 'regularised'
-    f.tau = 1. # regularisation term
-    f.run()
-    hist = f.regularised.reco_hist()
-
-
-.. image:: ../tikonov.png
-
-**D'Agostini Iterative (a.k.a - 'Bayesian' unfolding)**
-
-.. code-block:: python
-
-    f.method = 'iterative'
-    f.iterations = 4  # number of iterations performed
-    f.run()
-    hist = f.iterative.reco_hist()
-
-.. image:: ../iterative.png
-
-Status
-======
-This project is currently under development. If you would like to be involved please contact vincent.croft at cern.ch or contact me on slack. 
-
-this project depends on numpy, scipy (and will depend on pymc3)
+Cross Validation
+----------------
 
 
 Indices and tables
