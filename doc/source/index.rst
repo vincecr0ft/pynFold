@@ -107,7 +107,7 @@ The form of the minimization now takes the form:
 .. image:: ../DampedLSQR.svg
 
 
-This solution is obtained through the Paige and Saunders algorithm [#leastsqr] for spare linear equations and least squares. This algorithm also supports stopping conditions and is suitable for preconditioning of the matrix based on prior estimates which make it suitible for future studies. 
+This solution is obtained through the Paige and Saunders algorithm [#leastsqr]_ for spare linear equations and least squares. This algorithm also supports stopping conditions and is suitable for preconditioning of the matrix based on prior estimates which make it suitible for future studies. 
 
 Dimensionality Control
 ----------------------
