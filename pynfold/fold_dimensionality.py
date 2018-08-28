@@ -6,6 +6,7 @@ import traceback
 from scipy.linalg import svd
 from error_calculation import variance_of_matrix
 
+
 class richardson_lucy:
     def __init__(self, A, data_hist, epsilons, iterations=4):
         self.A = np.asarray(A).T
@@ -41,8 +42,15 @@ class richardson_lucy:
                 (self.A * p).sum(axis=1)[:, None]
             ) * self.data[:, None]).sum(axis=0),
             self.epsilons)
-        var_here = np.square(variance_of_matrix(divide_zeros(self.A*p ,(self.A*p).sum(axis=1)[:,None]))) + np.square(var)
+        var_here = np.square(
+            variance_of_matrix(
+                divide_zeros(
+                    self.A * p,
+                    (self.A * p).sum(axis=1)[:, None])
+                )
+            ) + np.square(var)
         return (new_mus, np.sqrt(var_here))
+
 
 class TSVD:
     def __init__(self, A, data_hist, truncations=2):
@@ -50,9 +58,9 @@ class TSVD:
         self.f = np.asarray(data_hist)
         self.truncations = int(truncations)
         self.unfolded = False
+
     def __call__(self):
         U, s, VT = svd(self.A)
-        print 'origininal matrix', self.A
         Sigma = np.zeros((self.A.shape[0], self.A.shape[1]))
         Sigma[:self.A.shape[0], :self.A.shape[0]] = np.diag(s)
         if len(s) <= self.truncations:
@@ -62,21 +70,24 @@ class TSVD:
         Sigma = Sigma[:, :n_elements]
         VT = VT[:n_elements, :]
         B = U.dot(Sigma.dot(VT))
-        print 'truncated matrix', B
-        #now that we have a truncated matrix we invert
+
+        # now that we have a truncated matrix we invert
         Bp_inv = np.linalg.pinv(B)
 
         try:
             mus = self.f * np.matrix(Bp_inv)
             mus = np.asarray(mus)[0]
             var = variance_of_matrix(B)
-        except:
+        except np.linalg.LinAlgError:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            lines = traceback.format_exception(
+                exc_type,
+                exc_value,
+                exc_traceback)
             logging.error(''.join(line for line in lines))
             logging.info('Solving for sparse matrix instead')
             from scipy.sparse.linalg import lsqr
-            x = lsqr(B.T, self.f, calc_var = True)
+            x = lsqr(B.T, self.f, calc_var=True)
             mus = x[0]
             var = x[-1]
         self.reco = mus
@@ -89,7 +100,8 @@ class TSVD:
             return self.reco
         else:
             self.__call__()
-            return self.reco            
-        
+            return self.reco
+
+
 def divide_zeros(A, B):
     return np.divide(A, B, out=np.zeros_like(A), where=B != 0)

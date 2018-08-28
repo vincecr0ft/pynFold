@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class MinimalFuncCode:
     def __init__(self, arg):
         self.co_varnames = tuple(arg)
@@ -11,9 +12,10 @@ class MinimalFuncCode:
         self.co_varnames = tuple(tmp)
         self.co_argcount = len(self.co_varnames)
 
+
 class HistogramPdf(object):
     def __init__(self, binedges):
-        self.hy = np.ones(len(binedges)-1)
+        self.hy = np.ones(len(binedges) - 1)
         self.binedges = binedges
         varnames = ['bin{}'.format(i) for i in range(len(self.hy))]
         self.func_code = MinimalFuncCode(varnames)

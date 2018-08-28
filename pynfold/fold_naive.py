@@ -5,6 +5,7 @@ import logging
 import sys
 import traceback
 
+
 class inversion:
     def __init__(self,
                  A, f):
@@ -13,17 +14,19 @@ class inversion:
 
     def __call__(self):
         Ap_inv = np.linalg.pinv(self.A)
-        mus  = self.f*Ap_inv
+        mus = self.f * Ap_inv
         mus = np.asarray(mus)[0]
         try:
             var = variance_of_matrix(self.A.T)
-        except:
+        except numpy.linalg.LinAlgError:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            lines = traceback.format_exception(exc_type,
+                                               exc_value,
+                                               exc_traceback)
             logging.error(''.join(line for line in lines))
             logging.info('Solving for sparse matrix instead')
             from scipy.sparse.linalg import lsqr
-            x = lsqr(self.A.T, self.f, calc_var = True)
+            x = lsqr(self.A.T, self.f, calc_var=True)
             mus = x[0]
             var = x[-1]
         self.reco = mus
