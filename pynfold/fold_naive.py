@@ -18,7 +18,7 @@ class inversion:
         mus = np.asarray(mus)[0]
         try:
             var = variance_of_matrix(self.A.T)
-        except numpy.linalg.LinAlgError:
+        except np.linalg.LinAlgError:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type,
                                                exc_value,

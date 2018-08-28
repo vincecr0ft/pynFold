@@ -25,9 +25,9 @@ class response:
                     logging.error('response should be a 2dim '
                                   'mapping true:measured')
             elif isinstance(inputarray, list):
-                if ((isinstance(inputarray[0], tuple)
-                    or isinstance(inputarray[0], list))
-                    and len(inputarray[0]) == 2):
+                if ((isinstance(inputarray[0], tuple) or
+                     isinstance(inputarray[0], list)) and
+                        len(inputarray[0]) == 2):
                     try:
                         self.response = np.swapaxes(
                             np.asarray(inputarray), 0, 1)
@@ -84,11 +84,11 @@ class response:
         response_hist = np.matrix(response_hist, dtype=float).T
 
         # prob to find x anywhere in range
-        p_x,_ = np.histogram(xy[0,:], bins_x)
+        p_x, _ = np.histogram(xy[0, :], bins_x)
         self.response_matrix = np.divide(response_hist,
                                          p_x,
                                          out=np.zeros_like(response_hist),
-                                         where=p_x!=0).T
+                                         where=p_x != 0).T
         return self.response_matrix
 
     def create_binned_efficiencies(self, bins_x, bins_y):

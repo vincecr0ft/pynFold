@@ -25,8 +25,8 @@ class fold:
                     xlow=x_shape[0],
                     xhi=x_shape[1],
                     n_points=x_shape[2])
-            elif (isinstance(x_shape, list)
-                  or isinstance(x_shape, np.ndarray)):
+            elif (isinstance(x_shape, list) or
+                  isinstance(x_shape, np.ndarray)):
                 self.set_x_shape(shape=x_shape)
             else:
                 logging.error('x_shape should be either '
@@ -47,9 +47,9 @@ class fold:
             logging.info('No unfolding method specified.'
                          u'Assume na\xfeve - matrix invert')
             self.type = 'naive'
-        elif  (not isinstance(type, str)
-               or not type.split(' ')[0].lower()
-               in ['naive', 'dimensionality', 'composite']):
+        elif (not isinstance(type, str) or
+              not type.split(' ')[0].lower()
+              in ['naive', 'dimensionality', 'composite']):
             message = ('Unfolding method not understood.\n'
                        '\nCurrent options are:\n'
                        u'    Na\xefve (naive) - '
@@ -85,11 +85,13 @@ class fold:
             self.response = None
 
     def set_response(self, inputarray):
-        logging.info('setting response as an array of type:{}'.format(type(inputarray)))
+        logging.info('setting response as an array'
+                     'of type:{}'.format(type(inputarray)))
         self.response = response(inputarray=inputarray)
 
     def set_response_matrix(self, matrix):
-        logging.info('setting response as an matrix of type:{}'.format(type(matrix)))
+        logging.info('setting response as an matrix'
+                     'of type:{}'.format(type(matrix)))
         self.response = response(matrix=matrix)
 
     def set_response_function(self, function):
@@ -102,9 +104,8 @@ class fold:
         if self.response is None:
             logging.info('No response set, initialising')
             self.response = response()
-        self.response.response = np.hstack([
-                self.response.response,
-                np.asarray([[x],[y]])])
+        self.response.response = np.hstack([self.response.response,
+                                            np.asarray([[x], [y]])])
 
     def miss(self, x):
         if self.response is None:
@@ -112,7 +113,7 @@ class fold:
             self.response = response()
         self.response.response = np.hstack(
             [self.response.response,
-             np.asarray([[x],[None]])])
+             np.asarray([[x], [None]])])
 
     def set_x_shape(self, **kwargs):
         if 'x_high' in kwargs:
@@ -121,8 +122,8 @@ class fold:
                 kwargs['x_high'],
                 kwargs['n_points'])
         elif 'shape' in kwargs:
-            if (isinstance(kwargs['shape'], list)
-                or isinstance(kwargs['shape'], np.ndarray)):
+            if (isinstance(kwargs['shape'], list) or
+                    isinstance(kwargs['shape'], np.ndarray)):
                 self.x_shape = np.asarray(kwargs['shape'])
             else:
                 logging.error('shape is a list or array of the bins or knots '
@@ -135,8 +136,8 @@ class fold:
                 kwargs['y_high'],
                 kwargs['n_points'])
         elif 'shape' in kwargs:
-            if (isinstance(kwargs['shape'], list)
-                or isinstance(kwargs['shape'], np.ndarray)):
+            if (isinstance(kwargs['shape'], list) or
+                    isinstance(kwargs['shape'], np.ndarray)):
                 self.y_shape = np.asarray(kwargs['shape'])
             else:
                 logging.error('shape is a list or array of the bins or knots '
@@ -168,14 +169,12 @@ class fold:
 
             self.set_y_shape(shape=self.y_bins)
 
-        elif (len(args) == 1 
-              and (isinstance(args[0], list) 
-                   or isinstance(args[0], np.ndarray)
-                   )
-              ):
-            assert  (len(args[0]) == len(hist) + 1,
-                     logging.error("those bins don't line up"
-                                   "with the histogram"))
+        elif (len(args) == 1 and
+              (isinstance(args[0], list) or
+               isinstance(args[0], np.ndarray))):
+            assert len(args[0]) == len(hist) + 1,\
+                logging.error("those bins don't line up"
+                              "with the histogram")
             self.y_bins = args[0]
             self.n_y_bins = len(args[0]) - 1
 
@@ -194,8 +193,8 @@ class fold:
             logging.error('The response can\'t be defined without a shape')
         elif self.response.response_matrix is not None:
             return self.response.response_matrix
-        elif (self.response.response.shape[1] == 0
-              and self.response.func is None):
+        elif (self.response.response.shape[1] == 0 and
+              self.response.func is None):
             logging.error('There\'s no response to put into a matrix')
         elif self.data_hist is not None:
             return self.response.create_response_matrix(
@@ -212,9 +211,9 @@ class fold:
             logging.error('The efficiency can\'t be defined without a shape')
         elif self.response.bin_efficiency is not None:
             return self.response.bin_efficiency
-        elif (self.response.response.shape[1] == 0 
-              and self.response.func is None 
-              and self.response_matrix is None):
+        elif (self.response.response.shape[1] == 0 and
+              self.response.func is None and
+              self.response_matrix is None):
             logging.error('There\'s no response to find efficiencies for')
         else:
             return self.response.create_binned_efficiencies(
@@ -240,8 +239,8 @@ class fold:
 
         elif 'dim' in self.type:
             logging.info('using dimensionality control method')
-            if (self.method_type is not None 
-                and self.method_type == 'tsvd'):
+            if (self.method_type is not None and
+                    self.method_type == 'tsvd'):
                 if len(args) is 1:
                     truncations = args[0]
                 else:
@@ -270,7 +269,7 @@ class fold:
                               'iterative or bayesian \n'
                               '    tsvd:'
                               'truncated singular value decomposition')
-                logging.error('the current method is {}'.format(
-                        self.method_type))
+                logging.error(
+                    'the current method is {}'.format(self.method_type))
         else:
             logging.error('method {} not understood'.format(self.type))

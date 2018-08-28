@@ -46,9 +46,7 @@ class richardson_lucy:
             variance_of_matrix(
                 divide_zeros(
                     self.A * p,
-                    (self.A * p).sum(axis=1)[:, None])
-                )
-            ) + np.square(var)
+                    (self.A * p).sum(axis=1)[:, None]))) + np.square(var)
         return (new_mus, np.sqrt(var_here))
 
 
