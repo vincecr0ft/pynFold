@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PynFold - Unfolding With Python &mdash; pynFold  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pynFold  documentation" href="#"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> pynFold
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">PynFold - Unfolding With Python</a><ul>
+<li><a class="reference internal" href="#the-inverse-problem">The Inverse Problem</a></li>
+<li><a class="reference internal" href="#unfolding-the-case-for-histograms">Unfolding - the case for histograms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#regularisation-methods">Regularisation Methods.</a><ul>
+<li><a class="reference internal" href="#naive">Naïve</a></li>
+<li><a class="reference internal" href="#composite">Composite</a></li>
+<li><a class="reference internal" href="#dimensionality-control">Dimensionality Control</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#discretisation">Discretisation</a><ul>
+<li><a class="reference internal" href="#galerkin-expansion-with-b-splines">Galerkin Expansion with B-splines</a></li>
+<li><a class="reference internal" href="#kernel-methods">Kernel Methods</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#regularisation-control">Regularisation Control</a><ul>
+<li><a class="reference internal" href="#l-curve">L-Curve</a></li>
+<li><a class="reference internal" href="#cross-validation">Cross Validation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">pynFold</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>PynFold - Unfolding With Python</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <a class="reference external image-reference" href="https://github.com/vincecr0ft/pynFold"><img alt="Oh! Crumbs!" class="align-center" src="https://c1.staticflickr.com/1/588/23404929566_5c9dfed1ef_o.jpg" /></a>
+<div class="section" id="pynfold-unfolding-with-python">
+<h1>PynFold - Unfolding With Python<a class="headerlink" href="#pynfold-unfolding-with-python" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<a class="reference external image-reference" href="https://travis-ci.org/vincecr0ft/pynFold"><img alt="https://travis-ci.org/vincecr0ft/pynFold.svg?branch=master" src="https://travis-ci.org/vincecr0ft/pynFold.svg?branch=master" /></a>
+<div class="section" id="the-inverse-problem">
+<h2>The Inverse Problem<a class="headerlink" href="#the-inverse-problem" title="Permalink to this headline">¶</a></h2>
+<p>The process of unfolding is part of a class of problems that arise when our goal is to recover ‘interior’ or ‘hidden’ information from the ‘outside’. It is used in medical imaging to reconstruct 3D images of the inner workings of body parts through CT scans, and electro-cardiography and similarly in geophysical prospecting and tommography. It is also present in most photo-editing software to ‘de-blur’ images as in High energy physics where we wish to ‘correct’ a distribution to account for the limited response of our measurement instruments. All of these problems can be formulated in terms of the Fredholm integral.</p>
+<img alt="_images/Fredholm.svg" src="_images/Fredholm.svg" /><p>where <em>g(y)</em> and <em>K(y|x)</em> are known or are estimated prior to solving the problem in the inverse sense. In the forward case, when <em>f</em> and <em>K</em> are known we can compute <em>g</em> by evaluating the integral.</p>
+<p><strong>Example: Calorimeter response</strong>
+Any detection of signals will have some limited resolution on account of the imperfect nature of measurement. In high energy physics a true distribution can be modelled using the technique of Monte Carlo (MC) simulation. This true distribution however will not be measured perfectly by the detector. A typical calorimeter (used to measure a particles energy) will have a response that is <em>smeared</em> by a function that has a gaussian distribution and a standard deviation that resembles:</p>
+<img alt="_images/smearing.svg" src="_images/smearing.svg" /><p>In this way there will be <em>less</em> information contained in the measured distribution than originally described since the information has been smeared away. This can be seen visually with a distribution of two gaussians that are smeared to become one.</p>
+<a class="reference internal image-reference" href="_images/TrueTwinPeak.png"><img alt="_images/TrueTwinPeak.png" src="_images/TrueTwinPeak.png" style="width: 45%;" /></a>
+<a class="reference internal image-reference" href="_images/SmearedTwinPeak.png"><img alt="_images/SmearedTwinPeak.png" src="_images/SmearedTwinPeak.png" style="width: 45%;" /></a>
+<p>Here it is trivial to see that if the only information we know is the response function and the measured distribution the true distribution is subject to certain information that we simply cannot reconstruct. It has been smeared away.</p>
+<p>The true nature of the problem is one step worse. Due to the nature of the Fredholm integral, abritarily small perturbations in the measured distribution <em>g(y)</em> can be estimated to have abritrarily large perturbations in the reconstructed/corrected/unfolded distribution. This property of inverse problems is formulated mathematically by the <em>Riemann-Lebesgue lemma</em>. The lemma states that the fourier transform of a function with a finite integral (such as in the Fredholm integral) vanishes at infinity. i.e. as the frequency of <em>f</em> increases then the amplitude of <em>g</em> decreases. In the inverse however, this means that small amplitudes (such as noise) can produce arbitarility large frequency components in the unfolded distribution. In the above example of two peaks being smeared into one, the presence of noise (e.g. too fine a binning in the histogram) in the distribution can produce arbitrary additional peaks in the unfolded response.</p>
+<p><strong>Deconvolution</strong>
+A special case for the inverse problem is <em>deconvolution</em> this is when the kernel is a function of the difference between <em>x</em> and <em>y</em></p>
+<img alt="_images/deconvolution.svg" src="_images/deconvolution.svg" /></div>
+<div class="section" id="unfolding-the-case-for-histograms">
+<h2>Unfolding - the case for histograms<a class="headerlink" href="#unfolding-the-case-for-histograms" title="Permalink to this headline">¶</a></h2>
+<p>It is common in high energy physics to represent distributions as histograms as the fininite binning represents the resolution of the detector and the practical discretisation of a continuous distribution as measured by a ‘real world’ apparatus. This method of approximating $f$ on at selected abscissas for discrete solutions to the fredhom integral is similar to the quadrature method also known as Nyström approximation with some differences in the normalisation.</p>
+<p>This is expressed mathematically as:</p>
+<img alt="_images/nystrom1.svg" src="_images/nystrom1.svg" /><p>where <em>En</em> is the quadrature error such that the Fredholm equation becomes:</p>
+<img alt="_images/nystrom2.svg" src="_images/nystrom2.svg" /><p>and the error term is a function of <em>y</em> and dependent therefore on any systematics associated with the measurement.</p>
+<p>We can apply a similar rationale to the kernel <em>K</em> to produce a <em>Response-Matrix</em> whose elements are the conditional probability <em>P(g|f)</em> for an event that was produced in the ‘truth-level’ bin <em>f</em> to be reconstructed in the reco-level bin <em>g</em>.</p>
+<img alt="_images/responsematrix.svg" src="_images/responsematrix.svg" /><p>this now allows us to formulate the problem as a multivariate linear regression. With the truth bins <em>f</em> and measured bins <em>g</em> related by a matrix of probabilities. The estimators for $f$ can then be obtained through standard least squares minimisation.</p>
+<img alt="_images/histinversion.svg" src="_images/histinversion.svg" /><p>Note that in general the histogram R is invertable if the same binning for true and measured distributions are used since then the matrix is square. This should however be avoided since then the solution is under constrained. The pseudo inverse must be used for non-square matrices and is useful for obtaining the variance of the estimators as:</p>
+<img alt="_images/variance.svg" src="_images/variance.svg" /><p>where <em>E²</em> is the underlying error term arrising from the measruement and the noise in the regression.</p>
+</div>
+</div>
+<div class="section" id="regularisation-methods">
+<h1>Regularisation Methods.<a class="headerlink" href="#regularisation-methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="naive">
+<h2>Naïve<a class="headerlink" href="#naive" title="Permalink to this headline">¶</a></h2>
+<p>A simple Matrix inversion described above in the default case for estimates.
+Of course the response matrix <em>should</em> have more measured bins than true and therefore the pseudo-inverse from numpy <a class="footnote-reference" href="#pseudoinverse" id="id1">[1]</a> is used.</p>
+<p>If the response is not full rank it might not be possible to obtain the pseudoinverse like this, in which case an iterative solution for the full least squares solution is provided by the scipy lsqr <a class="footnote-reference" href="#leastsqr" id="id2">[2]</a> function.</p>
+<table class="docutils footnote" frame="void" id="pseudoinverse" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>numpy.linalg. <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.pinv.html">pinv</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="leastsqr" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>scipy.sparse.linalg <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.lsqr.html#scipy.sparse.linalg.lsqr">lsqr</a></td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="composite">
+<h2>Composite<a class="headerlink" href="#composite" title="Permalink to this headline">¶</a></h2>
+<p>Composite hypotheses act upon the least squares or likelihood based estimation for the unfolded specrum, either by adding a system of lagrange mulipliers to the minimisation function or controling the minimisation process itself.</p>
+<p><strong>damped</strong></p>
+<p>The damped least squares solution is also known as tikonov regularisation or L2 regularisation or ridge regression as found in the <cite>RooUnfold</cite> package as the <cite>TUnfold</cite>.</p>
+<p>The form of the minimization now takes the form:</p>
+<img alt="_images/DampedLSQR.svg" src="_images/DampedLSQR.svg" /><p>This solution is obtained through the Paige and Saunders algorithm [#leastsqr] for spare linear equations and least squares. This algorithm also supports stopping conditions and is suitable for preconditioning of the matrix based on prior estimates which make it suitible for future studies.</p>
+</div>
+<div class="section" id="dimensionality-control">
+<h2>Dimensionality Control<a class="headerlink" href="#dimensionality-control" title="Permalink to this headline">¶</a></h2>
+<p>In the formulation of the Unfolding problem, it can be seen that the problems arise in the way that non-dominant information is lost or added during the inversion of the kernel function. This can be solved via controling the dimensionality of the kernel itself to remove these problematic small amplitute components.</p>
+<p><strong>TSVD</strong></p>
+<p>Truncated Singular Value Decomposition is one of the most intuative regularisation methods. In the Singular Value Expansion (SVE) of dummy kernels it can be seen that the smaller coefficient of the contributions to the response function the more likely it is to produce some high frequency fluctuation to the reconstructed distribution. By truncating these values we are imposing a smoothness constraint on the inverted response.</p>
+<p>The Singular Value Decomposition of a matrix can be understood as the axes of the least squares fitted elipse, together with it’s orientation and a projection onto these axes. The square sum of these values should contain the entire valriance of the matrix. By truncating these singular values we can produce a series of estimators that contain some fraction of the variance and therefore assert some degree of smoothness on the system.</p>
+<p>Control over the degree of regularisation in this case is obtained by selecting the number of values to truncate. It stands to reason that if the distribution does not contain very many singular values truncating too many will result in a loss of information.</p>
+<p><strong>Richardson-Lucy</strong></p>
+<p>The Richardson-Lucy algorithm, also known at iterative unfolding or Bayesian unfolding in high energy physics <a class="footnote-reference" href="#bayesian" id="id3">[3]</a> this method is commonly used in photo-editing/restoration and in Astronomy <a class="footnote-reference" href="#astro" id="id4">[4]</a>. The Point Spread Function (PSF) mentioned in some literature with respect to the Richardson-Lucy algorithm is equivalent to the Response Matrix described previously.</p>
+<p>The R-L algorithm iteratively updates a series of estimates for the unfolded distribution with the estimate provided by the . If the number of iterations is infinite then the Maximum Likelihood solution is obtained. The initial guess for tlshe unfolded distribution is given by a flat distribution normalised to the number of events.</p>
+<table class="docutils footnote" frame="void" id="bayesian" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Originally derived using Bayesian arguments the R-L algorithm was introduced to High Energy Particle physics by D’Agostini with the label ‘Bayesian Unfolding’ and is implemented in RooUnfold as such. However the algorithm has since been interpreted in a purely mathematical way. Though Bayes theorem is used to write the conditional probability of events the estimators obtained at the end of each iteration are not a sumary of the posterior probability density function for the distribution. Since the estimators are not based on the prior probability of the estimators the method is not strictly a bayesian method.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="astro" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>though the R-L algorithm is very common in some fields such as astronomy, responses to the algorithms performance can vary hugely. In high energy phyiscs the R-L algorithm converges quickly and the uncertainties rarely explode even with a high number of iterations however anecdotal evidence from Astronomers using the method report that often the uncertainties become prohibative before the number of iterations converge to a suitable resolution. As both of these situations are sub-optimal, this behaviour should be studied in detail in order to ascertain situations where the R-L algorithm is most suitable.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="discretisation">
+<h1>Discretisation<a class="headerlink" href="#discretisation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="galerkin-expansion-with-b-splines">
+<h2>Galerkin Expansion with B-splines<a class="headerlink" href="#galerkin-expansion-with-b-splines" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="kernel-methods">
+<h2>Kernel Methods<a class="headerlink" href="#kernel-methods" title="Permalink to this headline">¶</a></h2>
+<p>Kernel Density Estimation</p>
+<p>Gaussian Processes</p>
+</div>
+</div>
+<div class="section" id="regularisation-control">
+<h1>Regularisation Control<a class="headerlink" href="#regularisation-control" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="l-curve">
+<h2>L-Curve<a class="headerlink" href="#l-curve" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cross-validation">
+<h2>Cross Validation<a class="headerlink" href="#cross-validation" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Vincent Croft.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
