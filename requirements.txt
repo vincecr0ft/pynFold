@@ -1,4 +1,2 @@
 numpy
-pymc
 scipy
-matplotlib
